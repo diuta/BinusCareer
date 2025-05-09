@@ -1,0 +1,58 @@
+# Web (ReactJS) pipeline
+# dwi.setiyadi@gmail.com
+
+trigger:
+- dev
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+  displayName: 'Install Node.js'
+
+# - task: DownloadSecureFile@1
+#   name: environment
+#   displayName: 'Download Environment configuration'
+#   inputs:
+#     secureFile: $(environment)
+
+# - script: |
+#     rm -rf ./src/constants/ApiService.ts
+#     mv $(environment.secureFilePath) ./src/constants/ApiService.ts
+#   displayName: 'Copy Environment configuration'
+
+# - script: ls -al ./src/constants/ApiService.ts
+#   displayName: 'Check environment configuration'
+
+- script: npm install
+  displayName: 'npm install'
+
+- script: GENERATE_SOURCEMAP=false npm run build --output-hashing=none
+  displayName: 'npm run build --output-hashing=none'
+  env:
+    NODE_OPTIONS: --max_old_space_size=16384
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/build'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    CleanTargetFolder: true
+
+- task: ArchiveFiles@2
+  inputs:
+    #rootFolderOrFile: '$(Build.BinariesDirectory)'
+    rootFolderOrFile: '$(Build.SourcesDirectory)/build'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
