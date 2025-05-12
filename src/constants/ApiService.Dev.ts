@@ -31,8 +31,9 @@ export const ApiService: IApi = {
 
   // Article
   getArticles: `${baseURL}/api/Article`,
-  getArticleDetail: `${baseURL}/api/Article/{id}`,
+  getArticle: `${baseURL}/api/Article`,
   addArticle: `${baseURL}/api/Article`,
+  deleteArticle: `${baseURL}/api/Article`,
 
   // User
   login: `${baseURL}/api/User/login`,

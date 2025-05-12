@@ -19,12 +19,15 @@ export default function ArticleDetail() {
   }, [id]);
 
   const getArticleDetail = async () => {
-    const response: AxiosResponse = await apiClient.get(`${ApiService.getArticleDetail.replace("{id}", id!)}`);
+    const response: AxiosResponse = await apiClient.get(`${ApiService.getArticle}/${id}`);
     setArticle(response.data);
   };
 
   return (
-    <Paper elevation={5}>
+    <Paper elevation={5} sx={{
+      width: "100%",
+      height: "100%"
+    }}>
       <PageWrapper>
         <Typography
           className="text-center mb-4 mt-3 text-secondary align-self-center justify-content-center w-50" 

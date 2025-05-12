@@ -6,6 +6,8 @@ import AddCarousel from "../pages/manage-components/AddCarousel";
 import AddArticle from "../pages/article/AddArticle";
 import HomePage from "../pages/home/HomePage";
 import LandingPage2 from "../pages/landing-page/LandingPagePrivate";
+import ArticleManager from "../pages/article/ArticleManager";
+import EditArticle from "../pages/article/EditArticle";
 
 export const protectedRoutes: Route[] = [
   // {
@@ -36,20 +38,38 @@ export const protectedRoutes: Route[] = [
     appendDivider: true,
   },
   {
-    key: "add-article",
-    title: "Add Article",
-    description: "Add Article",
-    component: AddArticle,
-    path: "/addArticle",
-    isEnabled: true,
-    appendDivider: true,
-  },
-  {
     key: "home",
     title: "Home",
     description: "Home",
     component: LandingPage2,
     path: "/home",
+    isEnabled: true,
+    appendDivider: true,
+  },
+  {
+    key: "add-article",
+    title: "Add Article",
+    description: "Add Article",
+    component: AddArticle,
+    path: "/add-article",
+    isEnabled: true,
+    appendDivider: true,
+  },
+  {
+    key: "article-manager",
+    title: "Article Manager",
+    description: "Article Manager",
+    component: ArticleManager,
+    path: "/article-manager",
+    isEnabled: true,
+    appendDivider: true,
+  },
+  {
+    key: "edit-article",
+    title: "Edit Article",
+    description: "Edit Article",
+    component: EditArticle,
+    path: "/edit-article/:id",
     isEnabled: true,
     appendDivider: true,
   },

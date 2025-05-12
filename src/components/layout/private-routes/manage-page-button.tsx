@@ -40,7 +40,7 @@ export default function ManageButton() {
           width: "90%",
         }}
         component={Link}
-        href="/addArticle"
+        href="/article-manager"
       >
         Article Manager
       </Button>

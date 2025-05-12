@@ -1,33 +1,58 @@
-import { Paper, Typography, Button } from "@mui/material";
-import { title } from "process";
+import { Paper, Typography, Button, CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 import axios from "axios";
 import useModal from "../../hooks/use-modal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ApiService } from "../../constants/ApiService.Dev";
 import PageWrapper from "../../components/container/PageWrapper";
 import JoditComponent from "./component/JoditComponent";
 import { Stack } from "@mui/system";
+import apiClient from "../../config/api-client";
 
-export default function AddArticle() {
+export default function EditArticle() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const { showModal } = useModal();
+
   const [formData, setFormData] = useState({
+    id: 0,
     title: "",
     content: "",
     image: "",
   });
 
   useEffect(() => {
-    console.log(formData);
-  }, [formData]);
+    if (id) {
+      fetchArticleData();
+    }
+  }, [id]);
 
-  const handleClick = async () => {
-    await axios.post(ApiService.addArticle, formData);
+  const fetchArticleData = async () => {
+    console.log("Fetching article data for ID:", id);
+    const response = await apiClient.get(`${ApiService.getArticles}/${id}`);
+    const articleData = response.data;
+    console.log("Article data received:", articleData);
+
+    setFormData({
+      id: articleData.id,
+      title: articleData.title || "",
+      content: articleData.content || "",
+      image: articleData.image || "",
+    });
+    console.log("Form data updated:", {
+      id: articleData.id,
+      title: articleData.title,
+      content: articleData.content,
+      image: articleData.image,
+    });
+  };
+
+  const handleUpdateArticle = async () => {
+    await apiClient.put(`${ApiService.getArticles}/${id}`, formData);
     showModal({
-      title: "Article Added",
-      message: `Article\n${formData.title}\nSuccessfully Added!`,
+      title: "Article Updated",
+      message: `Article\n${formData.title}\nSuccessfully Updated!`,
       options: {
         buttonTitle: "Continue",
         variant: "success",
@@ -44,6 +69,7 @@ export default function AddArticle() {
       | { target: { name: string; value: string } }
   ) => {
     const { name, value } = e.target;
+    console.log("Input changed:", name, value);
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
@@ -69,15 +95,17 @@ export default function AddArticle() {
           }}
           color="#2196f3"
         >
-          ADD ARTICLE - BINUS
+          EDIT ARTICLE - BINUS
         </Typography>
         <Form>
           <FormGroup>
             <Label for="title">Title</Label>
             <Input
+              id="title"
               name="title"
               type="text"
               placeholder="Enter article title"
+              value={formData.title}
               onChange={handleInputChange}
             />
           </FormGroup>
@@ -85,9 +113,11 @@ export default function AddArticle() {
           <FormGroup>
             <Label for="image">ImageUrl</Label>
             <Input
+              id="image"
               name="image"
               type="text"
               placeholder="Enter article image"
+              value={formData.image}
               onChange={handleInputChange}
             />
           </FormGroup>
@@ -104,10 +134,10 @@ export default function AddArticle() {
         <Button
           color="primary"
           variant="outlined"
-          onClick={handleClick}
+          onClick={handleUpdateArticle}
           sx={{ alignSelf: "flex-end", my: 4 }}
         >
-          Submit
+          Update
         </Button>
       </Stack>
     </Paper>

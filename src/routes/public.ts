@@ -9,6 +9,7 @@ import LandingPage from "../pages/landing-page/LandingPagePublic";
 import Article from "../pages/article/Article";
 import ArticleDetail from "../pages/article/ArticleDetail";
 
+
 export const publicRoutes: Route[] = [
   {
     key: "router-login",

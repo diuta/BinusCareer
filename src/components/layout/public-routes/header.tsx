@@ -33,19 +33,26 @@ export function Header({ mobileMenu, setMobileMenu }: MobileMenuProps) {
         />
       </Box>
 
-      <Box sx={layoutPublicStyle.headerBoxLink}>
-        <Button
-        color="primary"
-        variant="contained">
-          <Link href="/login" underline="none" textTransform="none">
-            <Typography color="white" sx={layoutPublicStyle.headerBoxLinkTypography}>
-              Login
-            </Typography>
-          </Link>
-        </Button>
-      </Box>
-
       <Box sx={layoutPublicStyle.headerBox}>
+        <Box
+          sx={{
+            display: { xs: "none", md: "block" },
+            color: "#2f4f4f",
+            ":hover": { color: "grey" },
+            alignSelf: "center",
+          }}
+        >
+          <Button color="primary" variant="contained">
+            <Link href="/login" underline="none" textTransform="none">
+              <Typography
+                color="white"
+                sx={layoutPublicStyle.headerBoxLinkTypography}
+              >
+                Login
+              </Typography>
+            </Link>
+          </Button>
+        </Box>
         <MenuIcon
           sx={layoutPublicStyle.headerBoxIcon}
           onClick={() => setMobileMenu?.(!mobileMenu)}
