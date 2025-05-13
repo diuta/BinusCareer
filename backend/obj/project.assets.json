@@ -6018,11 +6018,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\1. BINUS\\Organizations\\ITDIV\\react+dotnet project\\package\\backend\\backend.csproj",
+      "projectUniqueName": "C:\\1. BINUS\\Organizations\\ITDIV\\BinusCareer\\backend\\backend.csproj",
       "projectName": "backend",
-      "projectPath": "C:\\1. BINUS\\Organizations\\ITDIV\\react+dotnet project\\package\\backend\\backend.csproj",
+      "projectPath": "C:\\1. BINUS\\Organizations\\ITDIV\\BinusCareer\\backend\\backend.csproj",
       "packagesPath": "C:\\Users\\dimas\\.nuget\\packages\\",
-      "outputPath": "C:\\1. BINUS\\Organizations\\ITDIV\\react+dotnet project\\package\\backend\\obj\\",
+      "outputPath": "C:\\1. BINUS\\Organizations\\ITDIV\\BinusCareer\\backend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

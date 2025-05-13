@@ -27,6 +27,7 @@ export const ApiService: IApi = {
 
   // Dashboard
   getCarousels: `${baseURL}/api/Carousel`,
+  getCarousel: `${baseURL}/api/Carousel`,
   addCarousel: `${baseURL}/api/Carousel`,
 
   // Article

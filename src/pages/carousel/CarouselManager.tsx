@@ -18,7 +18,7 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, { useEffect, useState } from "react";
 import PageWrapper from "../../components/container/PageWrapper";
-import { IArticle } from "./interface/Interface";
+import { ICarousel } from "./interface/Interface";
 import { ApiService } from "../../constants/ApiService.Dev";
 import apiClient from "../../config/api-client";
 import { AxiosResponse } from "axios";
@@ -26,31 +26,31 @@ import { useNavigate } from "react-router-dom";
 import { blue, grey } from "@mui/material/colors";
 import { fontSize, fontWeight } from "@mui/system";
 
-export default function ArticleManager() {
-  const [articles, setArticles] = useState<IArticle[]>([]);
+export default function CarouselManager() {
+  const [carousels, setCarousels] = useState<ICarousel[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    getArticles();
+    getCarousels();
   }, []);
 
-  const getArticles = async () => {
+  const getCarousels = async () => {
     const response: AxiosResponse = await apiClient.get(
-      `${ApiService.getArticles}`
+      `${ApiService.getCarousels}`
     );
-    setArticles(response.data);
+    setCarousels(response.data);
   };
 
-  const handleEdit = (articleId: string | number) => {
-    navigate(`/edit-article/${articleId}`);
+  const handleEdit = (carouselId: string | number) => {
+    navigate(`/edit-carousel/${carouselId}`);
   };
 
-  const handleDelete = async (articleId: string | number) => {
+  const handleDelete = async (carouselId: string | number) => {
     try {
-      await apiClient.delete(`${ApiService.getArticles}/${articleId}`);
-      getArticles();
+      await apiClient.delete(`${ApiService.getCarousels}/${carouselId}`);
+      getCarousels();
     } catch (error) {
-      console.error("Error deleting article:", error);
+      console.error("Error deleting carousel:", error);
     }
   };
 
@@ -74,8 +74,8 @@ export default function ArticleManager() {
         >
           <TableRow>
             <StyledTableCell align="right">NO.</StyledTableCell>
-            <StyledTableCell align="right">ARTICLE NAME</StyledTableCell>
-            <StyledTableCell align="right">ARTICLE CATEGORY</StyledTableCell>
+            <StyledTableCell align="right">CAROUSEL NAME</StyledTableCell>
+            <StyledTableCell align="right">CAROUSEL CATEGORY</StyledTableCell>
             <StyledTableCell align="right">PUBLISHED BY</StyledTableCell>
             <StyledTableCell align="right">DATE PUBLISHED</StyledTableCell>
             <StyledTableCell align="right">EDITED BY</StyledTableCell>
@@ -86,9 +86,9 @@ export default function ArticleManager() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {articles.map((article, index) => (
-            <TableRow key={article.id}>
-              <TableCell component="th" scope="article">
+          {carousels.map((carousel, index) => (
+            <TableRow key={carousel.id}>
+              <TableCell component="th" scope="carousel">
                 {index + 1}
               </TableCell>
               <TableCell align="right">
@@ -96,9 +96,9 @@ export default function ArticleManager() {
                   variant="body1"
                   color={blue[400]}
                   component={Link}
-                  href={`/article/${article.id}`}
+                  href={`/carousel/${carousel.id}`}
                 >
-                  {article.title}
+                  {carousel.title}
                 </Typography>
               </TableCell>
               <TableCell align="right">-</TableCell>
@@ -119,7 +119,7 @@ export default function ArticleManager() {
                       color: "#2196f3",
                       border: "1px solid #2196f3",
                     }}
-                    onClick={() => handleEdit(article.id)}
+                    onClick={() => handleEdit(carousel.id)}
                   />
                   <Button
                     color="error"
@@ -132,7 +132,7 @@ export default function ArticleManager() {
                       color: "#e53935",
                       border: "1px solid #e53935",
                     }}
-                    onClick={() => handleDelete(article.id)}
+                    onClick={() => handleDelete(carousel.id)}
                   />
                 </Stack>
               </TableCell>
@@ -140,7 +140,7 @@ export default function ArticleManager() {
           ))}
           <TableRow>
             <TableCell colSpan={10} align="center">
-              <Link href="/add-article">ADD ARTICLE</Link>
+              <Link href="/add-carousel">ADD CAROUSEL</Link>
             </TableCell>
           </TableRow>
         </TableBody>

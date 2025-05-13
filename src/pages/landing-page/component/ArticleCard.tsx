@@ -41,22 +41,22 @@ export default function ArticleCard() {
   };
 
   return (
-    <Stack
-      spacing={{ xs: 3, sm: 4 }}
-      direction="column"
-      useFlexGap
-      sx={{ flexWrap: "wrap" }}
-      justifyContent="center"
-    >
-      <Stack
-        spacing={{ xs: 3, sm: 4 }}
-        direction="row"
-        useFlexGap
-        sx={{ flexWrap: "wrap" }}
-        justifyContent="center"
-      >
-        {articles.length > 0 ? (
-          <>
+    <Box>
+      {articles.length > 0 ? (
+        <Stack
+          spacing={{ xs: 3, sm: 4 }}
+          direction="column"
+          useFlexGap
+          sx={{ flexWrap: "wrap" }}
+          justifyContent="center"
+        >
+          <Stack
+            spacing={{ xs: 3, sm: 4 }}
+            direction="row"
+            useFlexGap
+            sx={{ flexWrap: "wrap" }}
+            justifyContent="center"
+          >
             {displayArticles.map((article) => (
               <Paper
                 key={article.id}
@@ -85,22 +85,22 @@ export default function ArticleCard() {
                 </PageWrapper>
               </Paper>
             ))}
+          </Stack>
             <Link href="/article" className="text-center mb-5">
               View All
             </Link>
-          </>
-        ) : (
-          <Typography
-            variant="h4"
-            color="primary"
-            sx={{
-              textAlign: "center",
-            }}
-          >
-            No Articles Available
-          </Typography>
-        )}
-      </Stack>
-    </Stack>
+        </Stack>
+      ) : (
+        <Typography
+          variant="h4"
+          color="primary"
+          sx={{
+            textAlign: "center",
+          }}
+        >
+          No Articles Available
+        </Typography>
+      )}
+    </Box>
   );
 }

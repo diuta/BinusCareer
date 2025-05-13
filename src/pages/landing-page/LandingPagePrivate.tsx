@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import CarouselView from "./component/Carousel";
-import ArticleCard from "./component/ArticleCardPrivate";
+import ArticleCard from "./component/ArticleCard";
 import { Box } from "@mui/system";
 
 export default function LandingPage2() {

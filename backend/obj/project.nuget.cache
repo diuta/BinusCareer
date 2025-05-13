@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "A4X7nB5d5+GlPHnQMuhJ/yM4V9hI5tgUl15Py/hhCtjvw5KO0VWnwL0k8b8YTTtQKhgQUjoj0kxGhRK4u/7rUg==",
+  "dgSpecHash": "m3t75LgTqEGgl+fDVL2wkyyt8mVtRF7g+g5Y+advWV0JU9XWmOJ/KHMTcL8GhBSdyc2mZndruJ+vZ4y6YQKOQg==",
   "success": true,
-  "projectFilePath": "C:\\1. BINUS\\Organizations\\ITDIV\\react+dotnet project\\package\\backend\\backend.csproj",
+  "projectFilePath": "C:\\1. BINUS\\Organizations\\ITDIV\\BinusCareer\\backend\\backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\dimas\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\dimas\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\3.1.32\\microsoft.aspnetcore.authentication.jwtbearer.3.1.32.nupkg.sha512",

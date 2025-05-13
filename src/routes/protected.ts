@@ -2,12 +2,14 @@ import { Error404 } from "../pages/Error/Error404";
 import { Route } from "../types/route";
 import Article from "../pages/article/Article";
 import ArticleDetail from "../pages/article/ArticleDetail";
-import AddCarousel from "../pages/manage-components/AddCarousel";
+import AddCarousel from "../pages/carousel/AddCarousel";
 import AddArticle from "../pages/article/AddArticle";
 import HomePage from "../pages/home/HomePage";
 import LandingPage2 from "../pages/landing-page/LandingPagePrivate";
 import ArticleManager from "../pages/article/ArticleManager";
 import EditArticle from "../pages/article/EditArticle";
+import CarouselManager from "../pages/carousel/CarouselManager";
+import EditCarousel from "../pages/carousel/EditCarousel";
 
 export const protectedRoutes: Route[] = [
   // {
@@ -29,20 +31,38 @@ export const protectedRoutes: Route[] = [
   //   appendDivider: true,
   // },
   {
-    key: "add-carousel",
-    title: "Add Carousel",
-    description: "Add Carousel",
-    component: AddCarousel,
-    path: "/addCarousel",
-    isEnabled: true,
-    appendDivider: true,
-  },
-  {
     key: "home",
     title: "Home",
     description: "Home",
     component: LandingPage2,
     path: "/home",
+    isEnabled: true,
+    appendDivider: true,
+  },
+  {
+    key: "carousel-manager",
+    title: "Carousel Manager",
+    description: "Carousel Manager",
+    component: CarouselManager,
+    path: "/carousel-manager",
+    isEnabled: true,
+    appendDivider: true,
+  },
+  {
+    key: "add-carousel",
+    title: "Add Carousel",
+    description: "Add Carousel",
+    component: AddCarousel,
+    path: "/add-carousel",
+    isEnabled: true,
+    appendDivider: true,
+  },
+  {
+    key: "edit-carousel",
+    title: "Edit Carousel",
+    description: "Edit Carousel",
+    component: EditCarousel,
+    path: "/edit-carousel/:id",
     isEnabled: true,
     appendDivider: true,
   },
@@ -70,6 +90,24 @@ export const protectedRoutes: Route[] = [
     description: "Edit Article",
     component: EditArticle,
     path: "/edit-article/:id",
+    isEnabled: true,
+    appendDivider: true,
+  },
+  {
+    key: "article-view",
+    title: "Alumni Data",
+    description: "Filter Alumni Data",
+    component: Article,
+    path: "/protected/article",
+    isEnabled: true,
+    appendDivider: true,
+  },
+  {
+    key: "article-detail",
+    title: "Article Detail",
+    description: "Article Detail",
+    component: ArticleDetail,
+    path: "/protected/article/:id",
     isEnabled: true,
     appendDivider: true,
   },

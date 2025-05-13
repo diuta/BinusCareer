@@ -16,11 +16,17 @@ import { IArticle } from "./interface/Interface";
 import { ApiService } from "../../constants/ApiService.Dev";
 import apiClient from "../../config/api-client";
 import { AxiosResponse } from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectAuthUser } from "../../store/auth/selector";
 
 export default function Article() {
   const [articles, setArticles] = useState<IArticle[]>([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const user = useSelector(selectAuthUser);
+  const isLoggedIn = !!user;
+  const publicPath = "/article";
 
   useEffect(() => {
     getArticles();
@@ -32,6 +38,16 @@ export default function Article() {
     );
     setArticles(response.data);
   };
+
+  if (isLoggedIn && location.pathname.startsWith(publicPath)) {
+    return (
+      <Navigate
+        to="/protected/article/"
+        state={{ from: location }}
+        replace
+      />
+    );
+  }
 
   const handleClick = (id: number) => {
     navigate(`/article/${id}`);
@@ -77,31 +93,6 @@ export default function Article() {
           </PageWrapper>
         </Paper>
       ))}
-      <Paper
-        elevation={2}
-        sx={{
-          width: {
-            xs: "80vw",
-            sm: "40vw",
-            md: "25vw",
-          },
-        }}
-        style={{
-          cursor: "pointer",
-        }}
-        onClick={() => handleAddArticle()}
-      >
-        <img
-          className="w-100 d-block"
-          src="https://www.shutterstock.com/shutterstock/videos/3569801719/thumb/7.jpg?ip=x480"
-          style={{ maxHeight: "150px" }}
-        />
-        <PageWrapper>
-          <Typography variant="body1" gutterBottom>
-            Add New Article
-          </Typography>
-        </PageWrapper>
-      </Paper>
     </Stack>
   );
 }

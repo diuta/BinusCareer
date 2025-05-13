@@ -49,7 +49,7 @@ export default function AddCarousel() {
         buttonTitle: "Continue",
         variant: "success",
         onOk: () => {
-          navigate("/");
+          navigate("/home");
         },
       },
     });

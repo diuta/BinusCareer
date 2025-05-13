@@ -26,7 +26,7 @@ export default function ManageButton() {
           width: "90%",
         }}
         component={Link}
-        href="/addCarousel"
+        href="/carousel-manager"
       >
         Carousel Manager
       </Button>

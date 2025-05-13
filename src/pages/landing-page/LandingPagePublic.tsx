@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import CarouselView from "./component/Carousel";
-import ArticleCard from "./component/ArticleCardPublic";
+import ArticleCard from "./component/ArticleCard";
 
 export default function LandingPage() {
   return (

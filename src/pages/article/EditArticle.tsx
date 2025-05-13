@@ -14,7 +14,6 @@ export default function EditArticle() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { showModal } = useModal();
-
   const [formData, setFormData] = useState({
     id: 0,
     title: "",
@@ -29,10 +28,8 @@ export default function EditArticle() {
   }, [id]);
 
   const fetchArticleData = async () => {
-    console.log("Fetching article data for ID:", id);
-    const response = await apiClient.get(`${ApiService.getArticles}/${id}`);
+    const response = await apiClient.get(`${ApiService.getArticle}/${id}`);
     const articleData = response.data;
-    console.log("Article data received:", articleData);
 
     setFormData({
       id: articleData.id,
@@ -40,16 +37,10 @@ export default function EditArticle() {
       content: articleData.content || "",
       image: articleData.image || "",
     });
-    console.log("Form data updated:", {
-      id: articleData.id,
-      title: articleData.title,
-      content: articleData.content,
-      image: articleData.image,
-    });
   };
 
   const handleUpdateArticle = async () => {
-    await apiClient.put(`${ApiService.getArticles}/${id}`, formData);
+    await apiClient.put(`${ApiService.getArticle}/${id}`, formData);
     showModal({
       title: "Article Updated",
       message: `Article\n${formData.title}\nSuccessfully Updated!`,
