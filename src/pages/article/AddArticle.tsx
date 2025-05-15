@@ -60,7 +60,7 @@ export default function AddArticle() {
       }}
       elevation={2}
     >
-      <Stack sx={{ width: "90%", padding: 2 }} spacing={2} component={Row}>
+      <Stack sx={{ width: "90%", padding: 2 }} spacing={2} direction="column">
         <Typography
           variant="h3"
           sx={{
@@ -99,6 +99,42 @@ export default function AddArticle() {
               value={formData.content}
               onChange={handleInputChange}
             />
+          </FormGroup>
+
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ justifyContent: "space-between", width: "100%", mb: 3 }}
+          >
+            <FormGroup>
+              <Label for="postedDate">Posted Date</Label>
+              <Input
+                type="date"
+                onChange={handleInputChange}
+                style={{ width: "35vw" }}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="expiredDate">Expired Date</Label>
+              <Input
+                type="date"
+                onChange={handleInputChange}
+                style={{ width: "35vw" }}
+              />
+            </FormGroup>
+          </Stack>
+
+          <FormGroup>
+            <Label for="category">Article Category</Label>
+            <Input
+              type="select"
+              placeholder="Enter article category"
+              onChange={handleInputChange}
+            >
+              <option value="news">News</option>
+              <option value="event">Event</option>
+              <option value="announcement">Announcement</option>
+            </Input>
           </FormGroup>
         </Form>
         <Button

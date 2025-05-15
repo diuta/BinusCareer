@@ -1,61 +1,44 @@
-import {
-  Paper,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Box,
-  TextField,
-  CircularProgress,
-} from "@mui/material";
-import {
-  Container,
-  Row,
-  Col,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  Button,
-} from "reactstrap";
+import { Paper, Typography, Button as MuiButton, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import PageWrapper from "../../components/container/PageWrapper";
-import { IArticle } from "./interface/Interface";
-import { ApiService } from "../../constants/ApiService.Dev";
-import apiClient from "../../config/api-client";
-import axios, { AxiosResponse } from "axios";
-import { useNavigate } from "react-router-dom";
+import { Form, FormGroup, Label, Input } from "reactstrap";
+import axios from "axios";
 import useModal from "../../hooks/use-modal";
+import { useNavigate } from "react-router-dom";
+import { ApiService } from "../../constants/ApiService.Dev";
 
 export default function AddCarousel() {
   const navigate = useNavigate();
   const { showModal } = useModal();
   const [formData, setFormData] = useState({
-    image: "",
     title: "",
     description: "",
+    image: "",
   });
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   const handleClick = async () => {
     await axios.post(ApiService.addCarousel, formData);
     showModal({
       title: "Carousel Added",
-      message: `Carousel Successfully Added!`,
+      message: `Carousel\n${formData.title}\nSuccessfully Added!`,
       options: {
         buttonTitle: "Continue",
         variant: "success",
         onOk: () => {
-          navigate("/home");
+          navigate("/carousel-manager");
         },
       },
     });
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | { target: { name: string; value: string } }
+  ) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
@@ -73,66 +56,100 @@ export default function AddCarousel() {
       }}
       elevation={2}
     >
-      <PageWrapper>
-        <Row className="justify-content-center">
-          <Col md="6">
-            <Typography variant="h3" className="text-center mb-4">
-              Add Carousel
-            </Typography>
-            <Form>
-              <FormGroup>
-                <Label for="title">Title</Label>
-                <Input
-                  id="title"
-                  name="title"
-                  type="text"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  placeholder="Enter your Title"
-                />
-              </FormGroup>
+      <Stack sx={{ width: "90%", padding: 2 }} spacing={2} direction="column">
+        <Typography
+          variant="h3"
+          sx={{
+            textAlign: "center",
+            my: 4,
+          }}
+          color="#2196f3"
+        >
+          ADD CAROUSEL - BINUS
+        </Typography>
+        <Form>
+          <FormGroup>
+            <Label for="title">Title</Label>
+            <Input
+              name="title"
+              type="text"
+              placeholder="Enter carousel title"
+              onChange={handleInputChange}
+            />
+          </FormGroup>
 
-              <FormGroup>
-                <Label for="image">ImageUrl</Label>
-                <Input
-                  id="image"
-                  name="image"
-                  type="text"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  placeholder="Enter your Image Url"
-                />
-                <img
-                  className="mt-3 w-100 h-40"
-                  id="img"
-                  src={formData.image}
-                  style={{
-                    display: formData.image.length === 0 ? "none" : "block",
-                  }}
-                />
-              </FormGroup>
+          <FormGroup>
+            <Label for="image">ImageUrl</Label>
+            <Input
+              name="image"
+              type="text"
+              placeholder="Enter carousel image URL"
+              onChange={handleInputChange}
+            />
+            <img
+              className="mt-3 w-100"
+              src={formData.image}
+              alt="Carousel preview"
+              style={{
+                display: formData.image.length === 0 ? "none" : "block",
+                maxHeight: "200px",
+                objectFit: "contain",
+              }}
+            />
+          </FormGroup>
 
-              <FormGroup>
-                <Label for="description">Description</Label>
-                <Input
-                  id="description"
-                  name="description"
-                  description
-                  type="textarea"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  placeholder="Enter your Description"
-                  style={{ height: 200 }}
-                />
-              </FormGroup>
+          <FormGroup>
+            <Label for="description">Description</Label>
+            <Input
+              name="description"
+              type="textarea"
+              placeholder="Enter carousel description"
+              onChange={handleInputChange}
+              style={{ height: 200 }}
+            />
+          </FormGroup>
 
-              <Button color="primary" block onClick={handleClick}>
-                Submit
-              </Button>
-            </Form>
-          </Col>
-        </Row>
-      </PageWrapper>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ justifyContent: "space-between", width: "100%", mb: 3 }}
+          >
+            <FormGroup>
+              <Label for="postedDate">Posted Date</Label>
+              <Input
+                type="date"
+                onChange={handleInputChange}
+                style={{ width: "35vw" }}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="expiredDate">Expired Date</Label>
+              <Input
+                type="date"
+                onChange={handleInputChange}
+                style={{ width: "35vw" }}
+              />
+            </FormGroup>
+          </Stack>
+
+          <FormGroup>
+            <Label for="category">Carousel Category</Label>
+            <Input name="category" type="select" onChange={handleInputChange}>
+              <option value="news">News</option>
+              <option value="event">Event</option>
+              <option value="announcement">Announcement</option>
+            </Input>
+          </FormGroup>
+        </Form>
+        <MuiButton
+          color="primary"
+          variant="outlined"
+          onClick={handleClick}
+          sx={{ alignSelf: "flex-end", my: 4 }}
+        >
+          Submit
+        </MuiButton>
+      </Stack>
     </Paper>
   );
 }
