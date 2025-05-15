@@ -1,13 +1,11 @@
-import { Paper, Typography, Button, CircularProgress } from "@mui/material";
+import { Paper, Typography, Button, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
+import { Form, FormGroup, Input, Label } from "reactstrap";
 import axios from "axios";
 import useModal from "../../hooks/use-modal";
 import { useNavigate, useParams } from "react-router-dom";
 import { ApiService } from "../../constants/ApiService.Dev";
-import PageWrapper from "../../components/container/PageWrapper";
 import JoditComponent from "./component/JoditComponent";
-import { Stack } from "@mui/system";
 import apiClient from "../../config/api-client";
 
 export default function EditArticle() {
@@ -19,6 +17,9 @@ export default function EditArticle() {
     title: "",
     content: "",
     image: "",
+    postedDate: "",
+    expiredDate: "",
+    category: "",
   });
 
   useEffect(() => {
@@ -26,6 +27,10 @@ export default function EditArticle() {
       fetchArticleData();
     }
   }, [id]);
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   const fetchArticleData = async () => {
     const response = await apiClient.get(`${ApiService.getArticle}/${id}`);
@@ -36,6 +41,9 @@ export default function EditArticle() {
       title: articleData.title || "",
       content: articleData.content || "",
       image: articleData.image || "",
+      postedDate: articleData.postedDate || "",
+      expiredDate: articleData.expiredDate || "",
+      category: articleData.category || "",
     });
   };
 
@@ -60,7 +68,6 @@ export default function EditArticle() {
       | { target: { name: string; value: string } }
   ) => {
     const { name, value } = e.target;
-    console.log("Input changed:", name, value);
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
@@ -77,7 +84,7 @@ export default function EditArticle() {
       }}
       elevation={2}
     >
-      <Stack sx={{ width: "90%", padding: 2 }} spacing={2} component={Row}>
+      <Stack sx={{ width: "90%", padding: 2 }} spacing={2} direction="column">
         <Typography
           variant="h3"
           sx={{
@@ -92,7 +99,6 @@ export default function EditArticle() {
           <FormGroup>
             <Label for="title">Title</Label>
             <Input
-              id="title"
               name="title"
               type="text"
               placeholder="Enter article title"
@@ -104,7 +110,6 @@ export default function EditArticle() {
           <FormGroup>
             <Label for="image">ImageUrl</Label>
             <Input
-              id="image"
               name="image"
               type="text"
               placeholder="Enter article image"
@@ -120,6 +125,47 @@ export default function EditArticle() {
               value={formData.content}
               onChange={handleInputChange}
             />
+          </FormGroup>
+
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ justifyContent: "space-between", width: "100%", mb: 3 }}
+          >
+            <FormGroup>
+              <Label for="postedDate">Posted Date</Label>
+              <Input
+                type="date"
+                name="postedDate"
+                value={formData.postedDate}
+                onChange={handleInputChange}
+                style={{ width: "35vw" }}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="expiredDate">Expired Date</Label>
+              <Input
+                type="date"
+                name="expiredDate"
+                value={formData.expiredDate}
+                onChange={handleInputChange}
+                style={{ width: "35vw" }}
+              />
+            </FormGroup>
+          </Stack>
+
+          <FormGroup>
+            <Label for="category">Article Category</Label>
+            <Input
+              type="select"
+              name="category"
+              value={formData.category}
+              onChange={handleInputChange}
+            >
+              <option value="news">News</option>
+              <option value="event">Event</option>
+              <option value="announcement">Announcement</option>
+            </Input>
           </FormGroup>
         </Form>
         <Button
