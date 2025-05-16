@@ -7,48 +7,51 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ApiService } from "../../constants/ApiService.Dev";
 import JoditComponent from "./component/JoditComponent";
 import apiClient from "../../config/api-client";
+import { ICategory } from "./interface/Interface";
 
 export default function EditArticle() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { showModal } = useModal();
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [formData, setFormData] = useState({
-    id: 0,
     title: "",
     content: "",
     image: "",
+    categoryId: 0,
     postedDate: "",
     expiredDate: "",
-    category: "",
   });
 
   useEffect(() => {
-    if (id) {
-      fetchArticleData();
-    }
+    fetchArticleData();
+    fetchCategories();
   }, [id]);
-
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
 
   const fetchArticleData = async () => {
     const response = await apiClient.get(`${ApiService.getArticle}/${id}`);
     const articleData = response.data;
+    console.log(articleData);
 
     setFormData({
-      id: articleData.id,
       title: articleData.title || "",
       content: articleData.content || "",
       image: articleData.image || "",
-      postedDate: articleData.postedDate || "",
-      expiredDate: articleData.expiredDate || "",
-      category: articleData.category || "",
+      postedDate: new Date(articleData.postedDate).toISOString().split("T")[0],
+      expiredDate: new Date(articleData.expiredDate)
+        .toISOString()
+        .split("T")[0],
+      categoryId: articleData.categoryId || 0,
     });
   };
 
+  const fetchCategories = async () => {
+    const response = await axios.get(ApiService.getCategories);
+    setCategories(response.data);
+  };
+
   const handleUpdateArticle = async () => {
-    await apiClient.put(`${ApiService.getArticle}/${id}`, formData);
+    await apiClient.put(`${ApiService.editArticle}/${id}`, formData);
     showModal({
       title: "Article Updated",
       message: `Article\n${formData.title}\nSuccessfully Updated!`,
@@ -155,16 +158,16 @@ export default function EditArticle() {
           </Stack>
 
           <FormGroup>
-            <Label for="category">Article Category</Label>
+            <Label for="categoryId">Article Category</Label>
             <Input
               type="select"
-              name="category"
-              value={formData.category}
+              name="categoryId"
+              value={formData.categoryId}
               onChange={handleInputChange}
             >
-              <option value="news">News</option>
-              <option value="event">Event</option>
-              <option value="announcement">Announcement</option>
+              {categories.map((category) => (
+                <option value={category.id}>{category.name}</option>
+              ))}
             </Input>
           </FormGroup>
         </Form>

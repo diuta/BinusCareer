@@ -25,7 +25,6 @@ import {
 } from "reactstrap";
 import React, { useEffect, useState } from "react";
 import PageWrapper from "../../components/container/PageWrapper";
-import { IArticle } from "./interface/Interface";
 import { ApiService } from "../../constants/ApiService.Dev";
 import apiClient from "../../config/api-client";
 import axios, { AxiosResponse } from "axios";

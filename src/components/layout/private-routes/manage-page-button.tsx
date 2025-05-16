@@ -44,6 +44,20 @@ export default function ManageButton() {
       >
         Article Manager
       </Button>
+
+      <Button
+        color="primary"
+        variant="contained"
+        sx={{
+          borderRadius: 2,
+          textTransform: "none",
+          width: "90%",
+        }}
+        component={Link}
+        href="/category-manager"
+      >
+        Category Manager
+      </Button>
     </Stack>
   );
 }

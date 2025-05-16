@@ -51,6 +51,22 @@ namespace backend.Controllers
             return CreatedAtAction(nameof(GetCarousel), new { id = carousel.Id }, carousel);
         }
 
+        // PUT: api/Carousel/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCarousel(int id, Carousel carousel)
+        {
+            if (id != carousel.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(carousel).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        
+
         // DELETE: api/Carousel/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCarousel(int id)

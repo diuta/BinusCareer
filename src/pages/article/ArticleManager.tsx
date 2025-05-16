@@ -22,24 +22,24 @@ import {
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, { useEffect, useState } from "react";
-import PageWrapper from "../../components/container/PageWrapper";
-import { IArticle } from "./interface/Interface";
+import { IArticle, ICategory } from "./interface/Interface";
 import { ApiService } from "../../constants/ApiService.Dev";
 import apiClient from "../../config/api-client";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import { blue, grey } from "@mui/material/colors";
-import { fontSize, fontWeight } from "@mui/system";
 
 export default function ArticleManager() {
   const [articles, setArticles] = useState<IArticle[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<IArticle[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("date");
   const navigate = useNavigate();
 
   useEffect(() => {
     getArticles();
+    getCategories();
   }, []);
 
   useEffect(() => {
@@ -47,16 +47,39 @@ export default function ArticleManager() {
 
     if (searchTerm.trim() !== "") {
       result = result.filter((article) =>
-        article.title.toLowerCase().includes(searchTerm.toLowerCase())
+        article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        categories.find((category) => category.id === article.categoryId)?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        article.publishedBy.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    if (sortBy === "name") {
-      result.sort((a, b) => a.title.localeCompare(b.title));
+    switch (sortBy) {
+      case "name":
+        result.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "date":
+        result.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+        break;
+      case "category":
+        result.sort((a, b) => {
+          const categoryA = categories.find((c) => c.id === a.categoryId);
+          const categoryB = categories.find((c) => c.id === b.categoryId);
+          return (categoryA?.name || "").localeCompare(categoryB?.name || "");
+        });
+        break;
     }
 
     setFilteredArticles(result);
   }, [articles, searchTerm, sortBy]);
+
+  const getStatus = (article: IArticle) => {
+    const currentDate = new Date();
+    const expiredDate = new Date(article.expiredDate);
+    if (expiredDate < currentDate) {
+      return "Expired";
+    }
+    return "Active";
+  };
 
   const getArticles = async () => {
     const response: AxiosResponse = await apiClient.get(
@@ -64,6 +87,13 @@ export default function ArticleManager() {
     );
     setArticles(response.data);
     setFilteredArticles(response.data);
+  };
+
+  const getCategories = async () => {
+    const response: AxiosResponse = await apiClient.get(
+      `${ApiService.getCategories}`
+    );
+    setCategories(response.data);
   };
 
   const handleEdit = (articleId: string | number) => {
@@ -120,6 +150,7 @@ export default function ArticleManager() {
           >
             <MenuItem value="name">Article Name</MenuItem>
             <MenuItem value="date">Date Posted</MenuItem>
+            <MenuItem value="category">Category</MenuItem>
           </Select>
         </FormControl>
       </Stack>
@@ -159,12 +190,22 @@ export default function ArticleManager() {
                     {article.title}
                   </Typography>
                 </TableCell>
-                <TableCell align="right">-</TableCell>
-                <TableCell align="right">-</TableCell>
-                <TableCell align="right">-</TableCell>
-                <TableCell align="right">-</TableCell>
-                <TableCell align="right">-</TableCell>
-                <TableCell align="right">-</TableCell>
+                <TableCell align="right">
+                  {categories.find((category) => category.id === article.categoryId)?.name}
+                </TableCell>
+                <TableCell align="right">{article.publishedBy}</TableCell>
+                <TableCell align="right">
+                  {new Date(article.publishedAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell align="right">
+                  {article.updatedBy === "" ? article.updatedBy : "-"}
+                </TableCell>
+                <TableCell align="right">
+                  {article.updatedAt
+                    ? new Date(article.updatedAt).toLocaleDateString()
+                    : "-"}
+                </TableCell>
+                <TableCell align="right">{getStatus(article)}</TableCell>
                 <TableCell align="right">
                   <Stack direction="row">
                     <Button

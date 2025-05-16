@@ -6,25 +6,35 @@ import axios from "axios";
 import useModal from "../../hooks/use-modal";
 import { useNavigate } from "react-router-dom";
 import { ApiService } from "../../constants/ApiService.Dev";
-import PageWrapper from "../../components/container/PageWrapper";
 import JoditComponent from "./component/JoditComponent";
 import { Stack } from "@mui/system";
+import { ICategory } from "./interface/Interface";
+import { useSelector } from "react-redux";
+import { selectAuthUser } from "../../store/auth/selector";
+import apiClient from "../../config/api-client";
 
 export default function AddArticle() {
   const navigate = useNavigate();
   const { showModal } = useModal();
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const user = useSelector(selectAuthUser);
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     image: "",
+    categoryId: 0,
+    publishedBy: user?.name,
+    postedDate: "",
+    expiredDate: "",
   });
 
   useEffect(() => {
     console.log(formData);
+    fetchCategories();
   }, [formData]);
 
   const handleClick = async () => {
-    await axios.post(ApiService.addArticle, formData);
+    await apiClient.post(ApiService.addArticle, formData);
     showModal({
       title: "Article Added",
       message: `Article\n${formData.title}\nSuccessfully Added!`,
@@ -38,6 +48,11 @@ export default function AddArticle() {
     });
   };
 
+  const fetchCategories = async () => {
+    const response = await axios.get(ApiService.getCategories);
+    setCategories(response.data);
+  };
+
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -47,6 +62,14 @@ export default function AddArticle() {
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
+    }));
+  };
+
+  const handleIdChange = (e) => {
+    const categoryIdInput = parseInt(e.target.value, 10);
+    setFormData((prevState) => ({
+      ...prevState,
+      categoryId: categoryIdInput,
     }));
   };
 
@@ -109,6 +132,7 @@ export default function AddArticle() {
             <FormGroup>
               <Label for="postedDate">Posted Date</Label>
               <Input
+                name="postedDate"
                 type="date"
                 onChange={handleInputChange}
                 style={{ width: "35vw" }}
@@ -117,6 +141,7 @@ export default function AddArticle() {
             <FormGroup>
               <Label for="expiredDate">Expired Date</Label>
               <Input
+                name="expiredDate"
                 type="date"
                 onChange={handleInputChange}
                 style={{ width: "35vw" }}
@@ -125,15 +150,16 @@ export default function AddArticle() {
           </Stack>
 
           <FormGroup>
-            <Label for="category">Article Category</Label>
+            <Label for="categoryId">Article Category</Label>
             <Input
+              name="categoryId"
               type="select"
               placeholder="Enter article category"
-              onChange={handleInputChange}
+              onChange={handleIdChange}
             >
-              <option value="news">News</option>
-              <option value="event">Event</option>
-              <option value="announcement">Announcement</option>
+              {categories.map((category) => (
+                <option value={category.id}>{category.name}</option>
+              ))}
             </Input>
           </FormGroup>
         </Form>

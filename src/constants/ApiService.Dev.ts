@@ -25,16 +25,24 @@ export const ApiService: IApi = {
   changeRole: `${baseURL}/loginADA/changeActiveRole`,
   refreshToken: `${baseURL}/api/User/refresh-token`,
 
-  // Dashboard
+  // Carousel
   getCarousels: `${baseURL}/api/Carousel`,
   getCarousel: `${baseURL}/api/Carousel`,
   addCarousel: `${baseURL}/api/Carousel`,
+  editCarousel: `${baseURL}/api/Carousel`,
+
+  // Category
+  getCategories: `${baseURL}/api/Category`,
+  getCategory: `${baseURL}/api/Category`,
+  addCategory: `${baseURL}/api/Category`,
+  editCategory: `${baseURL}/api/Category`,
 
   // Article
   getArticles: `${baseURL}/api/Article`,
   getArticle: `${baseURL}/api/Article`,
   addArticle: `${baseURL}/api/Article`,
   deleteArticle: `${baseURL}/api/Article`,
+  editArticle: `${baseURL}/api/Article`,
 
   // User
   login: `${baseURL}/api/User/login`,

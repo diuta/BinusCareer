@@ -52,29 +52,30 @@ namespace backend.Controllers
 
             _context.Entry(article).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ArticleExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         // POST: api/Article
         [HttpPost]
-        public async Task<ActionResult<Article>> AddArticle(Article article)
+        public async Task<ActionResult<Article>> AddArticle(Article articleData)
         {
+            DateTime articleDataPostedDate = articleData.PostedDate;
+            DateTime articleDataExpiredDate = articleData.ExpiredDate;
+
+            var article = new Article(
+                title: articleData.Title,
+                image: articleData.Image,
+                content: articleData.Content,
+                categoryId: articleData.CategoryId,
+                publishedBy: articleData.PublishedBy,
+                updatedBy: articleData.UpdatedBy,
+                updatedAt: articleData.UpdatedAt,
+                postedDate: articleDataPostedDate,
+                expiredDate: articleDataExpiredDate
+            );
+            
             _context.Articles.Add(article);
             await _context.SaveChangesAsync();
 

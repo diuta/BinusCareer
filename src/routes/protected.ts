@@ -10,6 +10,9 @@ import ArticleManager from "../pages/article/ArticleManager";
 import EditArticle from "../pages/article/EditArticle";
 import CarouselManager from "../pages/carousel/CarouselManager";
 import EditCarousel from "../pages/carousel/EditCarousel";
+import AddCategory from "../pages/category/AddCategory";
+import CategoryManager from "../pages/category/CategoryManager";
+import EditCategory from "../pages/category/EditCategory";
 
 export const protectedRoutes: Route[] = [
   // {
@@ -63,6 +66,33 @@ export const protectedRoutes: Route[] = [
     description: "Edit Carousel",
     component: EditCarousel,
     path: "/edit-carousel/:id",
+    isEnabled: true,
+    appendDivider: true,
+  },
+  {
+    key: "category-manager",
+    title: "Category Manager",
+    description: "Category Manager",
+    component: CategoryManager,
+    path: "/category-manager",
+    isEnabled: true,
+    appendDivider: true,
+  },
+  {
+    key: "add-category",
+    title: "Add Category",
+    description: "Add Category",
+    component: AddCategory,
+    path: "/add-category",
+    isEnabled: true,
+    appendDivider: true,
+  },
+  {
+    key: "edit-category",
+    title: "Edit Category",
+    description: "Edit Category",
+    component: EditCategory,
+    path: "/edit-category/:id",
     isEnabled: true,
     appendDivider: true,
   },
