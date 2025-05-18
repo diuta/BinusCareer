@@ -3,18 +3,14 @@ import {
   Paper,
   Stack,
   Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
 } from "@mui/material";
 import CarouselView from "./component/Carousel";
 import ArticleCard from "./component/ArticleCard";
 import { Box } from "@mui/system";
 
-export default function LandingPage2() {
+export default function LandingPagePrivate() {
+  
   return (
     <Stack
       spacing={{ xs: 3, sm: 4 }}

@@ -102,7 +102,11 @@ export default function CategoryManager() {
 
   return (
     <Paper elevation={5} sx={{ padding: 5 }}>
+      <Typography variant="h3" className="text-center" sx={{ mb: 3, color: "#2196f3" }}>
+        CATEGORY LIST
+      </Typography>
       <Stack direction="column" spacing={2} sx={{ mb: 3 }}>
+        <InputLabel id="search-label">Search</InputLabel>
         <TextField
           label="Search by category name"
           variant="outlined"
@@ -111,19 +115,25 @@ export default function CategoryManager() {
           onChange={handleSearchChange}
           size="small"
         />
-        <FormControl sx={{ minWidth: 200 }} size="small">
-          <InputLabel id="sort-select-label">Sort By</InputLabel>
-          <Select
-            labelId="sort-select-label"
-            id="sort-select"
-            value={sortBy}
-            label="Sort By"
-            onChange={handleSortChange}
+        <InputLabel id="sort-select-label">Sort By</InputLabel>
+        <Select
+          labelId="sort-select-label"
+          id="sort-select"
+          value={sortBy}
+          label="Sort By"
+          onChange={handleSortChange}
+        >
+          <MenuItem value="name">Category Name</MenuItem>
+          <MenuItem value="id">Category ID</MenuItem>
+        </Select>
+        <Button variant="contained" color="primary" sx={{
+            width: "15vh"
+          }}
+          component={Link}
+          href="/add-category"
           >
-            <MenuItem value="name">Category Name</MenuItem>
-            <MenuItem value="id">Category ID</MenuItem>
-          </Select>
-        </FormControl>
+            Add Category
+          </Button>
       </Stack>
 
       <TableContainer component={Paper} elevation={0}>
@@ -135,7 +145,7 @@ export default function CategoryManager() {
           >
             <TableRow>
               <StyledTableCell align="left">ID.</StyledTableCell>
-              <StyledTableCell align="right">CAROUSEL NAME</StyledTableCell>
+              <StyledTableCell align="right">CATEGORY NAME</StyledTableCell>
               <StyledTableCell align="right">ACTION</StyledTableCell>
             </TableRow>
           </TableHead>
@@ -185,11 +195,6 @@ export default function CategoryManager() {
                 </TableCell>
               </TableRow>
             ))}
-            <TableRow>
-              <TableCell colSpan={10} align="center">
-                <Link href="/add-category">ADD CATEGORY</Link>
-              </TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>

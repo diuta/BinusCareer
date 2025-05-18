@@ -24,7 +24,8 @@ export default function CarouselView() {
     const response: AxiosResponse = await apiClient.get(
       `${ApiService.getCarousels}`
     );
-    setItems(response.data);
+    const filteredItems = response.data.filter((carousel: ICarousel) => getStatus(carousel) === "Published");
+    setItems(filteredItems);
   };
 
   const next = () => {
@@ -42,6 +43,19 @@ export default function CarouselView() {
   const goToIndex = (newIndex) => {
     if (animating) return;
     setActiveIndex(newIndex);
+  };
+
+  const getStatus = (carousel: ICarousel) => {
+    const currentDate = new Date();
+    const postedDate = new Date(carousel.postedDate);
+    const expiredDate = new Date(carousel.expiredDate);
+    if (expiredDate < currentDate) {
+      return "Expired";
+    }
+    if (postedDate > currentDate) {
+      return "Pending";
+    }
+    return "Published";
   };
 
   const slides = items.map((item) => (

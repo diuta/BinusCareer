@@ -30,30 +30,39 @@ import apiClient from "../../config/api-client";
 import axios, { AxiosResponse } from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import useModal from "../../hooks/use-modal";
+import { useSelector } from "react-redux";
+import { selectAuthUser } from "../../store/auth/selector";
+import { ICategory } from "./interface/Interface";
 
 export default function EditCarousel() {
   const navigate = useNavigate();
   const { showModal } = useModal();
   const { id } = useParams();
+  const user = useSelector(selectAuthUser);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [formData, setFormData] = useState({
     id: 0,
     title: "",
     description: "",
     image: "",
-    startDate: "",
-    endDate: "",
-    category: "",
+    categoryId: 0,
+    publishedBy: "",
+    updatedBy: "",
+    postedDate: "",
+    expiredDate: "",
   });
 
   useEffect(() => {
     if (id) {
       fetchCarouselData();
+      fetchCategories();
     }
   }, [id]);
 
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
+  const fetchCategories = async () => {
+    const response = await axios.get(ApiService.getCategories);
+    setCategories(response.data);
+  };
 
   const fetchCarouselData = async () => {
     const response = await apiClient.get(`${ApiService.getCarousel}/${id}`);
@@ -64,13 +73,16 @@ export default function EditCarousel() {
       title: carouselData.title || "",
       description: carouselData.description || "",
       image: carouselData.image || "",
-      startDate: carouselData.startDate || "",
-      endDate: carouselData.endDate || "",
-      category: carouselData.category || "",
+      categoryId: carouselData.categoryId,
+      publishedBy: carouselData.publishedBy || "",
+      updatedBy: user?.name,
+      postedDate: carouselData.postedDate.split("T")[0],
+      expiredDate: carouselData.expiredDate.split("T")[0],
     });
   };
 
   const handleUpdateCarousel = async () => {
+    console.log(formData);
     await apiClient.put(`${ApiService.getCarousel}/${id}`, formData);
     showModal({
       title: "Carousel Updated",
@@ -83,6 +95,14 @@ export default function EditCarousel() {
         },
       },
     });
+  };
+
+  const handleIdChange = (e) => {
+    const categoryIdInput = parseInt(e.target.value, 10);
+    setFormData((prevState) => ({
+      ...prevState,
+      categoryId: categoryIdInput,
+    }));
   };
 
   const handleInputChange = (
@@ -169,21 +189,21 @@ export default function EditCarousel() {
             sx={{ justifyContent: "space-between", width: "100%", mb: 3 }}
           >
             <FormGroup>
-              <Label for="startDate">Start Date</Label>
+              <Label for="postedDate">Posted Date</Label>
               <Input
-                name="startDate"
+                name="postedDate"
                 type="date"
-                value={formData.startDate}
+                value={formData.postedDate}
                 onChange={handleInputChange}
                 style={{ width: "35vw" }}
               />
             </FormGroup>
             <FormGroup>
-              <Label for="endDate">End Date</Label>
+              <Label for="expiredDate">Expired Date</Label>
               <Input
-                name="endDate"
+                name="expiredDate"
                 type="date"
-                value={formData.endDate}
+                value={formData.expiredDate}
                 onChange={handleInputChange}
                 style={{ width: "35vw" }}
               />
@@ -195,12 +215,12 @@ export default function EditCarousel() {
             <Input
               name="category"
               type="select"
-              value={formData.category}
-              onChange={handleInputChange}
+              value={formData.categoryId}
+              onChange={handleIdChange}
             >
-              <option value="home">Home</option>
-              <option value="events">Events</option>
-              <option value="news">News</option>
+              {categories.map((category) => (
+                <option value={category.id}>{category.name}</option>
+              ))}
             </Input>
           </FormGroup>
         </Form>

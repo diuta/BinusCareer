@@ -22,7 +22,7 @@ export default function AddArticle() {
     title: "",
     content: "",
     image: "",
-    categoryId: 0,
+    categoryId: 1,
     publishedBy: user?.name,
     postedDate: "",
     expiredDate: "",

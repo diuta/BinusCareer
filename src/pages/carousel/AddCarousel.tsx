@@ -5,19 +5,34 @@ import axios from "axios";
 import useModal from "../../hooks/use-modal";
 import { useNavigate } from "react-router-dom";
 import { ApiService } from "../../constants/ApiService.Dev";
+import { ICategory } from "./interface/Interface";
+import { useSelector } from "react-redux";
+import { selectAuthUser } from "../../store/auth/selector";
 
 export default function AddCarousel() {
   const navigate = useNavigate();
   const { showModal } = useModal();
+  const user = useSelector(selectAuthUser);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     image: "",
+    categoryId: 0,
+    publishedBy: user?.name,
+    postedDate: "",
+    expiredDate: "",
   });
 
   useEffect(() => {
     console.log(formData);
+    fetchCategories();
   }, [formData]);
+
+  const fetchCategories = async () => {
+    const response = await axios.get(ApiService.getCategories);
+    setCategories(response.data);
+  };
 
   const handleClick = async () => {
     await axios.post(ApiService.addCarousel, formData);
@@ -43,6 +58,14 @@ export default function AddCarousel() {
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
+    }));
+  };
+
+  const handleIdChange = (e) => {
+    const categoryIdInput = parseInt(e.target.value, 10);
+    setFormData((prevState) => ({
+      ...prevState,
+      categoryId: categoryIdInput,
     }));
   };
 
@@ -118,6 +141,7 @@ export default function AddCarousel() {
               <Label for="postedDate">Posted Date</Label>
               <Input
                 type="date"
+                name="postedDate"
                 onChange={handleInputChange}
                 style={{ width: "35vw" }}
               />
@@ -126,6 +150,7 @@ export default function AddCarousel() {
               <Label for="expiredDate">Expired Date</Label>
               <Input
                 type="date"
+                name="expiredDate"
                 onChange={handleInputChange}
                 style={{ width: "35vw" }}
               />
@@ -133,11 +158,11 @@ export default function AddCarousel() {
           </Stack>
 
           <FormGroup>
-            <Label for="category">Carousel Category</Label>
-            <Input name="category" type="select" onChange={handleInputChange}>
-              <option value="news">News</option>
-              <option value="event">Event</option>
-              <option value="announcement">Announcement</option>
+            <Label for="categoryId">Carousel Category</Label>
+            <Input name="categoryId" type="select" onChange={handleIdChange}>
+              {categories.map((category) => (
+                <option value={category.id}>{category.name}</option>
+              ))}
             </Input>
           </FormGroup>
         </Form>

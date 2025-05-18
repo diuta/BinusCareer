@@ -23,7 +23,7 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, { useEffect, useState } from "react";
 import PageWrapper from "../../components/container/PageWrapper";
-import { ICarousel } from "./interface/Interface";
+import { ICarousel, ICategory } from "./interface/Interface";
 import { ApiService } from "../../constants/ApiService.Dev";
 import apiClient from "../../config/api-client";
 import { AxiosResponse } from "axios";
@@ -34,12 +34,15 @@ import { fontSize, fontWeight } from "@mui/system";
 export default function CarouselManager() {
   const [carousels, setCarousels] = useState<ICarousel[]>([]);
   const [filteredCarousels, setFilteredCarousels] = useState<ICarousel[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("date");
+  const [categorySelected, setCategorySelected] = useState("All");
+  const [statusSelected, setStatusSelected] = useState("All");
   const navigate = useNavigate();
 
   useEffect(() => {
     getCarousels();
+    getCategories();
   }, []);
 
   useEffect(() => {
@@ -51,12 +54,18 @@ export default function CarouselManager() {
       );
     }
 
-    if (sortBy === "name") {
-      result.sort((a, b) => a.title.localeCompare(b.title));
+    if (categorySelected && categorySelected !== "All") {
+      result = result.filter((article) =>
+        categories.find((category) => category.id === article.categoryId)?.name.toLowerCase().includes(categorySelected.toLowerCase())
+      );
+    }
+
+    if (statusSelected && statusSelected !== "All") {
+      result = result.filter((article) => getStatus(article).toLowerCase().includes(statusSelected.toLowerCase()));
     }
 
     setFilteredCarousels(result);
-  }, [carousels, searchTerm, sortBy]);
+  }, [carousels, searchTerm, categorySelected, statusSelected]);
 
   const getCarousels = async () => {
     const response: AxiosResponse = await apiClient.get(
@@ -64,6 +73,26 @@ export default function CarouselManager() {
     );
     setCarousels(response.data);
     setFilteredCarousels(response.data);
+  };
+
+  const getCategories = async () => {
+    const response: AxiosResponse = await apiClient.get(
+      `${ApiService.getCategories}`
+    );
+    setCategories(response.data);
+  };
+
+  const getStatus = (carousel: ICarousel) => {
+    const currentDate = new Date();
+    const postedDate = new Date(carousel.postedDate);
+    const expiredDate = new Date(carousel.expiredDate);
+    if (expiredDate < currentDate) {
+      return "Expired";
+    }
+    if (postedDate > currentDate) {
+      return "Pending";
+    }
+    return "Published";
   };
 
   const handleEdit = (carouselId: string | number) => {
@@ -83,8 +112,12 @@ export default function CarouselManager() {
     setSearchTerm(event.target.value);
   };
 
-  const handleSortChange = (event: any) => {
-    setSortBy(event.target.value);
+  const handleCategoryChange = (event: any) => {
+    setCategorySelected(event.target.value);
+  };
+
+  const handleStatusChange = (event: any) => {
+    setStatusSelected(event.target.value);
   };
 
   const StyledTableCell = styled(TableCell)(() => ({
@@ -100,28 +133,63 @@ export default function CarouselManager() {
 
   return (
     <Paper elevation={5} sx={{ padding: 5 }}>
+      <Typography variant="h3" className="text-center" sx={{ mb: 3, color: "#2196f3" }}>
+        CAROUSEL LIST
+      </Typography>
       <Stack direction="column" spacing={2} sx={{ mb: 3 }}>
+        <InputLabel id="search-label">Search</InputLabel>
         <TextField
-          label="Search by carousel name"
+          label="Type a keyword"
           variant="outlined"
           fullWidth
           value={searchTerm}
           onChange={handleSearchChange}
           size="small"
         />
-        <FormControl sx={{ minWidth: 200 }} size="small">
-          <InputLabel id="sort-select-label">Sort By</InputLabel>
-          <Select
-            labelId="sort-select-label"
-            id="sort-select"
-            value={sortBy}
-            label="Sort By"
-            onChange={handleSortChange}
-          >
-            <MenuItem value="name">Carousel Name</MenuItem>
-            <MenuItem value="date">Date Posted</MenuItem>
-          </Select>
-        </FormControl>
+        <Stack direction="row" sx={{justifyContent: "space-between", width: "100%"}}>
+          <Box>
+            <InputLabel id="category-select-label">Category Type</InputLabel>
+            <Select
+              id="category-select"
+              value={categorySelected}
+              onChange={handleCategoryChange}
+              sx={{
+                width: 650
+              }}
+            >
+              <MenuItem value="All">All</MenuItem>
+              {categories.map((category) => (
+                <MenuItem value={category.name}>{category.name}</MenuItem>
+              ))}
+            </Select>
+          </Box>
+          <Box>
+            <InputLabel id="status-select-label">Status</InputLabel>
+            <Select
+              id="status-select"
+              value={statusSelected}
+              onChange={handleStatusChange}
+              sx={{
+                width: 650
+              }}
+            >
+              <MenuItem value="All">All</MenuItem>
+              <MenuItem value="Published">Published</MenuItem>
+              <MenuItem value="Expired">Expired</MenuItem>
+              <MenuItem value="Pending">Pending</MenuItem>
+            </Select>
+          </Box>
+        </Stack>
+          <Box>
+            <Button variant="contained" color="primary" sx={{
+              width: "15vh"
+            }}
+            component={Link}
+            href="/add-carousel"
+            >
+              Add Carousel
+            </Button>
+          </Box>
       </Stack>
 
       <TableContainer component={Paper} elevation={0}>
@@ -153,18 +221,16 @@ export default function CarouselManager() {
                   <Typography
                     variant="body1"
                     color={blue[400]}
-                    component={Link}
-                    href={`/carousel/${carousel.id}`}
                   >
                     {carousel.title}
                   </Typography>
                 </TableCell>
-                <TableCell align="right">-</TableCell>
-                <TableCell align="right">-</TableCell>
-                <TableCell align="right">-</TableCell>
-                <TableCell align="right">-</TableCell>
-                <TableCell align="right">-</TableCell>
-                <TableCell align="right">-</TableCell>
+                <TableCell align="right">{categories.find(c => c.id === carousel.categoryId)?.name || "-"}</TableCell>
+                <TableCell align="right">{carousel.publishedBy}</TableCell>
+                <TableCell align="right">{new Date(carousel.publishedAt).toLocaleDateString()}</TableCell>
+                <TableCell align="right">{carousel.updatedBy === "" ? "-" : carousel.updatedBy}</TableCell>
+                <TableCell align="right">{carousel.updatedAt ? new Date(carousel.updatedAt).toLocaleDateString() : "-"}</TableCell>
+                <TableCell align="center" sx={{backgroundColor: getStatus(carousel) === "Published" ? "steelblue" : getStatus(carousel) === "Expired" ? "crimson" : "orange", color: "white"}}>{getStatus(carousel)}</TableCell>
                 <TableCell align="right">
                   <Stack direction="row">
                     <Button
@@ -195,11 +261,6 @@ export default function CarouselManager() {
                 </TableCell>
               </TableRow>
             ))}
-            <TableRow>
-              <TableCell colSpan={10} align="center">
-                <Link href="/add-carousel">ADD CAROUSEL</Link>
-              </TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>

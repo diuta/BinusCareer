@@ -5,7 +5,7 @@ import ArticleDetail from "../pages/article/ArticleDetail";
 import AddCarousel from "../pages/carousel/AddCarousel";
 import AddArticle from "../pages/article/AddArticle";
 import HomePage from "../pages/home/HomePage";
-import LandingPage2 from "../pages/landing-page/LandingPagePrivate";
+import LandingPagePrivate from "../pages/landing-page/LandingPagePrivate";
 import ArticleManager from "../pages/article/ArticleManager";
 import EditArticle from "../pages/article/EditArticle";
 import CarouselManager from "../pages/carousel/CarouselManager";
@@ -37,7 +37,7 @@ export const protectedRoutes: Route[] = [
     key: "home",
     title: "Home",
     description: "Home",
-    component: LandingPage2,
+    component: LandingPagePrivate,
     path: "/home",
     isEnabled: true,
     appendDivider: true,

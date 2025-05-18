@@ -29,11 +29,25 @@ export default function ArticleCard() {
     getArticles();
   }, []);
 
+  const getStatus = (article: IArticle) => {
+    const currentDate = new Date();
+    const postedDate = new Date(article.postedDate);
+    const expiredDate = new Date(article.expiredDate);
+    if (expiredDate < currentDate) {
+      return "Expired";
+    }
+    if (postedDate > currentDate) {
+      return "Pending";
+    }
+    return "Published";
+  };
+
   const getArticles = async () => {
     const response: AxiosResponse = await apiClient.get(
       `${ApiService.getArticles}`
     );
-    setArticles(response.data);
+    const filteredArticles = response.data.filter((article: IArticle) => getStatus(article) === "Published");
+    setArticles(filteredArticles);
   };
 
   const handleClick = (id: number) => {

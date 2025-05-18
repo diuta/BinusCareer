@@ -34,7 +34,8 @@ export default function ArticleManager() {
   const [filteredArticles, setFilteredArticles] = useState<IArticle[]>([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("date");
+  const [categorySelected, setCategorySelected] = useState("All");
+  const [statusSelected, setStatusSelected] = useState("All");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,32 +54,30 @@ export default function ArticleManager() {
       );
     }
 
-    switch (sortBy) {
-      case "name":
-        result.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case "date":
-        result.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-        break;
-      case "category":
-        result.sort((a, b) => {
-          const categoryA = categories.find((c) => c.id === a.categoryId);
-          const categoryB = categories.find((c) => c.id === b.categoryId);
-          return (categoryA?.name || "").localeCompare(categoryB?.name || "");
-        });
-        break;
+    if (categorySelected && categorySelected !== "All") {
+      result = result.filter((article) =>
+        categories.find((category) => category.id === article.categoryId)?.name.toLowerCase().includes(categorySelected.toLowerCase())
+      );
+    }
+
+    if (statusSelected && statusSelected !== "All") {
+      result = result.filter((article) => getStatus(article).toLowerCase().includes(statusSelected.toLowerCase()));
     }
 
     setFilteredArticles(result);
-  }, [articles, searchTerm, sortBy]);
+  }, [articles, searchTerm, categorySelected, statusSelected]);
 
   const getStatus = (article: IArticle) => {
     const currentDate = new Date();
+    const postedDate = new Date(article.postedDate);
     const expiredDate = new Date(article.expiredDate);
     if (expiredDate < currentDate) {
       return "Expired";
     }
-    return "Active";
+    if (postedDate > currentDate) {
+      return "Pending";
+    }
+    return "Published";
   };
 
   const getArticles = async () => {
@@ -113,8 +112,12 @@ export default function ArticleManager() {
     setSearchTerm(event.target.value);
   };
 
-  const handleSortChange = (event: any) => {
-    setSortBy(event.target.value);
+  const handleCategoryChange = (event: any) => {
+    setCategorySelected(event.target.value);
+  };
+
+  const handleStatusChange = (event: any) => {
+    setStatusSelected(event.target.value);
   };
 
   const StyledTableCell = styled(TableCell)(() => ({
@@ -130,29 +133,63 @@ export default function ArticleManager() {
 
   return (
     <Paper elevation={5} sx={{ padding: 5 }}>
+      <Typography variant="h3" className="text-center" sx={{ mb: 3, color: "#2196f3" }}>
+        ARTICLE LIST
+      </Typography>
       <Stack direction="column" spacing={2} sx={{ mb: 3 }}>
+        <InputLabel id="search-label">Search</InputLabel>
         <TextField
-          label="Search by article name"
+          label="Type a keyword"
           variant="outlined"
           fullWidth
           value={searchTerm}
           onChange={handleSearchChange}
           size="small"
         />
-        <FormControl sx={{ minWidth: 200 }} size="small">
-          <InputLabel id="sort-select-label">Sort By</InputLabel>
-          <Select
-            labelId="sort-select-label"
-            id="sort-select"
-            value={sortBy}
-            label="Sort By"
-            onChange={handleSortChange}
-          >
-            <MenuItem value="name">Article Name</MenuItem>
-            <MenuItem value="date">Date Posted</MenuItem>
-            <MenuItem value="category">Category</MenuItem>
-          </Select>
-        </FormControl>
+        <Stack direction="row" sx={{justifyContent: "space-between", width: "100%"}}>
+          <Box>
+            <InputLabel id="category-select-label">Category Type</InputLabel>
+            <Select
+              id="category-select"
+              value={categorySelected}
+              onChange={handleCategoryChange}
+              sx={{
+                width: 650
+              }}
+            >
+              <MenuItem value="All">All</MenuItem>
+              {categories.map((category) => (
+                <MenuItem value={category.name}>{category.name}</MenuItem>
+              ))}
+            </Select>
+          </Box>
+          <Box>
+            <InputLabel id="status-select-label">Status</InputLabel>
+            <Select
+              id="status-select"
+              value={statusSelected}
+              onChange={handleStatusChange}
+              sx={{
+                width: 650
+              }}
+            >
+              <MenuItem value="All">All</MenuItem>
+              <MenuItem value="Published">Published</MenuItem>
+              <MenuItem value="Expired">Expired</MenuItem>
+              <MenuItem value="Pending">Pending</MenuItem>
+            </Select>
+          </Box>
+        </Stack>
+          <Box>
+            <Button variant="contained" color="primary" sx={{
+              width: "15vh"
+            }}
+            component={Link}
+            href="/add-article"
+            >
+              Add Article
+            </Button>
+          </Box>
       </Stack>
 
       <TableContainer component={Paper} elevation={0}>
@@ -178,7 +215,7 @@ export default function ArticleManager() {
             {filteredArticles.map((article, index) => (
               <TableRow key={article.id}>
                 <TableCell component="th" scope="article">
-                  {article.id}
+                  {index + 1}
                 </TableCell>
                 <TableCell align="right">
                   <Typography
@@ -205,7 +242,7 @@ export default function ArticleManager() {
                     ? new Date(article.updatedAt).toLocaleDateString()
                     : "-"}
                 </TableCell>
-                <TableCell align="right">{getStatus(article)}</TableCell>
+                <TableCell align="center" sx={{backgroundColor: getStatus(article) === "Published" ? "steelblue" : getStatus(article) === "Expired" ? "crimson" : "orange", color: "white"}}>{getStatus(article)}</TableCell>
                 <TableCell align="right">
                   <Stack direction="row">
                     <Button
@@ -236,11 +273,6 @@ export default function ArticleManager() {
                 </TableCell>
               </TableRow>
             ))}
-            <TableRow>
-              <TableCell colSpan={10} align="center">
-                <Link href="/add-article">ADD ARTICLE</Link>
-              </TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>

@@ -17,19 +17,6 @@ export default function ManageButton() {
       justifyContent="center"
       alignItems="center"
     >
-      <Button
-        color="primary"
-        variant="contained"
-        sx={{
-          borderRadius: 2,
-          textTransform: "none",
-          width: "90%",
-        }}
-        component={Link}
-        href="/carousel-manager"
-      >
-        Carousel Manager
-      </Button>
 
       <Button
         color="primary"
@@ -43,6 +30,20 @@ export default function ManageButton() {
         href="/article-manager"
       >
         Article Manager
+      </Button>
+      
+      <Button
+        color="primary"
+        variant="contained"
+        sx={{
+          borderRadius: 2,
+          textTransform: "none",
+          width: "90%",
+        }}
+        component={Link}
+        href="/carousel-manager"
+      >
+        Carousel Manager
       </Button>
 
       <Button
