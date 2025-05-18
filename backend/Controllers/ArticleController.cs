@@ -50,8 +50,23 @@ namespace backend.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(article).State = EntityState.Modified;
-
+            var existingArticle = await _context.Articles.FindAsync(id);
+            
+            if (existingArticle == null)
+            {
+                return NotFound();
+            }
+            
+            // Update properties individually
+            existingArticle.Title = article.Title;
+            existingArticle.Image = article.Image;
+            existingArticle.Content = article.Content;
+            existingArticle.CategoryId = article.CategoryId;
+            existingArticle.PostedDate = article.PostedDate;
+            existingArticle.ExpiredDate = article.ExpiredDate;
+            existingArticle.UpdatedBy = article.UpdatedBy;
+            existingArticle.UpdatedAt = DateTime.Now;
+            
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -63,6 +78,7 @@ namespace backend.Controllers
         {
             DateTime articleDataPostedDate = articleData.PostedDate;
             DateTime articleDataExpiredDate = articleData.ExpiredDate;
+            DateTime articlePublishedAt = DateTime.Now;
 
             var article = new Article(
                 title: articleData.Title,
@@ -70,6 +86,7 @@ namespace backend.Controllers
                 content: articleData.Content,
                 categoryId: articleData.CategoryId,
                 publishedBy: articleData.PublishedBy,
+                publishedAt: articlePublishedAt,
                 updatedBy: articleData.UpdatedBy,
                 updatedAt: articleData.UpdatedAt,
                 postedDate: articleDataPostedDate,

@@ -8,17 +8,23 @@ import { ApiService } from "../../constants/ApiService.Dev";
 import JoditComponent from "./component/JoditComponent";
 import apiClient from "../../config/api-client";
 import { ICategory } from "./interface/Interface";
+import { useSelector } from "react-redux";
+import { selectAuthUser } from "../../store/auth/selector";
 
 export default function EditArticle() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { showModal } = useModal();
   const [categories, setCategories] = useState<ICategory[]>([]);
+  const user = useSelector(selectAuthUser);
   const [formData, setFormData] = useState({
+    id: 0,
     title: "",
     content: "",
     image: "",
     categoryId: 0,
+    publishedBy: "",
+    updatedBy: "",
     postedDate: "",
     expiredDate: "",
   });
@@ -34,14 +40,15 @@ export default function EditArticle() {
     console.log(articleData);
 
     setFormData({
+      id: articleData.id,
       title: articleData.title || "",
       content: articleData.content || "",
       image: articleData.image || "",
       postedDate: new Date(articleData.postedDate).toISOString().split("T")[0],
-      expiredDate: new Date(articleData.expiredDate)
-        .toISOString()
-        .split("T")[0],
-      categoryId: articleData.categoryId || 0,
+      expiredDate: new Date(articleData.expiredDate).toISOString().split("T")[0],
+      categoryId: articleData.categoryId,
+      publishedBy: articleData.publishedBy || "",
+      updatedBy: user?.name,
     });
   };
 
@@ -74,6 +81,14 @@ export default function EditArticle() {
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
+    }));
+  };
+
+  const handleIdChange = (e) => {
+    const categoryIdInput = parseInt(e.target.value, 10);
+    setFormData((prevState) => ({
+      ...prevState,
+      categoryId: categoryIdInput,
     }));
   };
 
@@ -163,7 +178,7 @@ export default function EditArticle() {
               type="select"
               name="categoryId"
               value={formData.categoryId}
-              onChange={handleInputChange}
+              onChange={handleIdChange}
             >
               {categories.map((category) => (
                 <option value={category.id}>{category.name}</option>

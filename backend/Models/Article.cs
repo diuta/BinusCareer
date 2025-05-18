@@ -24,21 +24,21 @@ namespace backend.Models
         public DateTime PostedDate { get; set; }
         public DateTime ExpiredDate { get; set; }
 
-        public Article(string title, string image, string content, int categoryId, string publishedBy, DateTime postedDate, DateTime expiredDate, string? updatedBy = null, DateTime? updatedAt = null)
+        public Article(string title, string image, string content, int categoryId, string publishedBy, DateTime publishedAt, DateTime postedDate, DateTime expiredDate, string? updatedBy = null, DateTime? updatedAt = null)
         {
             Title = title;
             Image = image;
             Content = content;
             CategoryId = categoryId;
             PublishedBy = publishedBy;
-            PublishedAt = DateTime.Now;
+            PublishedAt = publishedAt;
             UpdatedBy = updatedBy;
             UpdatedAt = updatedAt;
             PostedDate = postedDate;
             ExpiredDate = expiredDate;
         }
         
-        public Article() // Required for JSON deserialization
+        public Article()
         {
         }
     }

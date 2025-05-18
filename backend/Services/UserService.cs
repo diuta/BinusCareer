@@ -118,7 +118,7 @@ namespace backend.Services
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, user.Role));
@@ -135,7 +135,7 @@ namespace backend.Services
                 return new RefreshToken
                 {
                     Token = Convert.ToBase64String(randomBytes),
-                    Expires = DateTime.UtcNow.AddDays(3),
+                    Expires = DateTime.UtcNow.AddDays(7),
                     Created = DateTime.UtcNow,
                     CreatedByIp = ipAddress
                 };

@@ -178,7 +178,7 @@ export default function ArticleManager() {
             {filteredArticles.map((article, index) => (
               <TableRow key={article.id}>
                 <TableCell component="th" scope="article">
-                  {index + 1}
+                  {article.id}
                 </TableCell>
                 <TableCell align="right">
                   <Typography
@@ -198,7 +198,7 @@ export default function ArticleManager() {
                   {new Date(article.publishedAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell align="right">
-                  {article.updatedBy === "" ? article.updatedBy : "-"}
+                  {article.updatedBy === "" ? "-" : article.updatedBy}
                 </TableCell>
                 <TableCell align="right">
                   {article.updatedAt
