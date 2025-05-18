@@ -43,8 +43,25 @@ namespace backend.Controllers
 
         // POST: api/Carousel
         [HttpPost]
-        public async Task<ActionResult<Carousel>> AddCarousel(Carousel carousel)
+        public async Task<ActionResult<Carousel>> AddCarousel(Carousel carouselData)
         {
+            DateTime carouselDataPostedDate = carouselData.PostedDate;
+            DateTime carouselDataExpiredDate = carouselData.ExpiredDate;
+            DateTime carouselPublishedAt = DateTime.Now;
+
+            var carousel = new Carousel(
+                image: carouselData.Image,
+                title: carouselData.Title,
+                description: carouselData.Description,
+                categoryId: carouselData.CategoryId,
+                publishedBy: carouselData.PublishedBy,
+                publishedAt: carouselPublishedAt,
+                updatedBy: carouselData.UpdatedBy,
+                updatedAt: carouselData.UpdatedAt,
+                postedDate: carouselDataPostedDate,
+                expiredDate: carouselDataExpiredDate
+            );
+            
             _context.Carousels.Add(carousel);
             await _context.SaveChangesAsync();
 
@@ -55,12 +72,24 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCarousel(int id, Carousel carousel)
         {
-            if (id != carousel.Id)
-            {
-                return BadRequest();
-            }
+            var prevCarousel = await _context.Carousels.FindAsync(id);
 
-            _context.Entry(carousel).State = EntityState.Modified;
+            if (prevCarousel == null)
+            {
+                return NotFound();
+            }
+            
+            prevCarousel.Title = carousel.Title;
+            prevCarousel.Image = carousel.Image;
+            prevCarousel.Description = carousel.Description;
+            prevCarousel.CategoryId = carousel.CategoryId;
+            prevCarousel.PublishedBy = carousel.PublishedBy;
+            prevCarousel.UpdatedBy = carousel.UpdatedBy;
+            prevCarousel.UpdatedAt = DateTime.Now;
+            prevCarousel.PostedDate = carousel.PostedDate;
+            prevCarousel.ExpiredDate = carousel.ExpiredDate;
+
+            _context.Entry(prevCarousel).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return NoContent();
