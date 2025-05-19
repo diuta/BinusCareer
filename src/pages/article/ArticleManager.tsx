@@ -47,21 +47,30 @@ export default function ArticleManager() {
     let result = [...articles];
 
     if (searchTerm.trim() !== "") {
-      result = result.filter((article) =>
-        article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        categories.find((category) => category.id === article.categoryId)?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        article.publishedBy.toLowerCase().includes(searchTerm.toLowerCase())
+      result = result.filter(
+        (article) =>
+          article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          categories
+            .find((category) => category.id === article.categoryId)
+            ?.name.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          article.publishedBy.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     if (categorySelected && categorySelected !== "All") {
       result = result.filter((article) =>
-        categories.find((category) => category.id === article.categoryId)?.name.toLowerCase().includes(categorySelected.toLowerCase())
+        categories
+          .find((category) => category.id === article.categoryId)
+          ?.name.toLowerCase()
+          .includes(categorySelected.toLowerCase())
       );
     }
 
     if (statusSelected && statusSelected !== "All") {
-      result = result.filter((article) => getStatus(article).toLowerCase().includes(statusSelected.toLowerCase()));
+      result = result.filter((article) =>
+        getStatus(article).toLowerCase().includes(statusSelected.toLowerCase())
+      );
     }
 
     setFilteredArticles(result);
@@ -120,42 +129,39 @@ export default function ArticleManager() {
     setStatusSelected(event.target.value);
   };
 
-  const StyledTableCell = styled(TableCell)(() => ({
-    [`&.${tableCellClasses.head}`]: {
-      fontSize: 15,
-      color: grey[700],
-      fontWeight: 700,
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 12,
-    },
-  }));
-
   return (
     <Paper elevation={5} sx={{ padding: 5 }}>
-      <Typography variant="h3" className="text-center" sx={{ mb: 3, color: "#2196f3" }}>
+      <Typography
+        variant="h3"
+        className="text-center"
+        sx={{ mb: 3, color: "#2196f3" }}
+      >
         ARTICLE LIST
       </Typography>
       <Stack direction="column" spacing={2} sx={{ mb: 3 }}>
         <InputLabel id="search-label">Search</InputLabel>
         <TextField
-          label="Type a keyword"
           variant="outlined"
           fullWidth
           value={searchTerm}
           onChange={handleSearchChange}
           size="small"
         />
-        <Stack direction="row" sx={{justifyContent: "space-between", width: "100%"}}>
-          <Box>
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          <Box sx={{ width: { xs: "100%", md: "48%" } }}>
             <InputLabel id="category-select-label">Category Type</InputLabel>
             <Select
               id="category-select"
               value={categorySelected}
               onChange={handleCategoryChange}
-              sx={{
-                width: 650
-              }}
+              fullWidth
             >
               <MenuItem value="All">All</MenuItem>
               {categories.map((category) => (
@@ -163,15 +169,13 @@ export default function ArticleManager() {
               ))}
             </Select>
           </Box>
-          <Box>
+          <Box sx={{ width: { xs: "100%", md: "48%" } }}>
             <InputLabel id="status-select-label">Status</InputLabel>
             <Select
               id="status-select"
               value={statusSelected}
               onChange={handleStatusChange}
-              sx={{
-                width: 650
-              }}
+              fullWidth
             >
               <MenuItem value="All">All</MenuItem>
               <MenuItem value="Published">Published</MenuItem>
@@ -180,16 +184,19 @@ export default function ArticleManager() {
             </Select>
           </Box>
         </Stack>
-          <Box>
-            <Button variant="contained" color="primary" sx={{
-              width: "15vh"
+        <Box>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              width: "15vh",
             }}
             component={Link}
             href="/add-article"
-            >
-              Add Article
-            </Button>
-          </Box>
+          >
+            Add Article
+          </Button>
+        </Box>
       </Stack>
 
       <TableContainer component={Paper} elevation={0}>
@@ -200,15 +207,15 @@ export default function ArticleManager() {
             }}
           >
             <TableRow>
-              <StyledTableCell align="right">NO.</StyledTableCell>
-              <StyledTableCell align="right">ARTICLE NAME</StyledTableCell>
-              <StyledTableCell align="right">ARTICLE CATEGORY</StyledTableCell>
-              <StyledTableCell align="right">PUBLISHED BY</StyledTableCell>
-              <StyledTableCell align="right">DATE PUBLISHED</StyledTableCell>
-              <StyledTableCell align="right">EDITED BY</StyledTableCell>
-              <StyledTableCell align="right">LAST EDITED</StyledTableCell>
-              <StyledTableCell align="right">STATUS</StyledTableCell>
-              <StyledTableCell align="right">ACTION</StyledTableCell>
+              <TableCell align="center">NO.</TableCell>
+              <TableCell align="center">ARTICLE NAME</TableCell>
+              <TableCell align="center">ARTICLE CATEGORY</TableCell>
+              <TableCell align="center">PUBLISHED BY</TableCell>
+              <TableCell align="center">DATE PUBLISHED</TableCell>
+              <TableCell align="center">EDITED BY</TableCell>
+              <TableCell align="center">LAST EDITED</TableCell>
+              <TableCell align="center">STATUS</TableCell>
+              <TableCell align="center">ACTION</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -217,7 +224,7 @@ export default function ArticleManager() {
                 <TableCell component="th" scope="article">
                   {index + 1}
                 </TableCell>
-                <TableCell align="right">
+                <TableCell align="center">
                   <Typography
                     variant="body1"
                     color={blue[400]}
@@ -227,24 +234,41 @@ export default function ArticleManager() {
                     {article.title}
                   </Typography>
                 </TableCell>
-                <TableCell align="right">
-                  {categories.find((category) => category.id === article.categoryId)?.name}
+                <TableCell align="center">
+                  {
+                    categories.find(
+                      (category) => category.id === article.categoryId
+                    )?.name
+                  }
                 </TableCell>
-                <TableCell align="right">{article.publishedBy}</TableCell>
-                <TableCell align="right">
+                <TableCell align="center">{article.publishedBy}</TableCell>
+                <TableCell align="center">
                   {new Date(article.publishedAt).toLocaleDateString()}
                 </TableCell>
-                <TableCell align="right">
+                <TableCell align="center">
                   {article.updatedBy === "" ? "-" : article.updatedBy}
                 </TableCell>
-                <TableCell align="right">
+                <TableCell align="center">
                   {article.updatedAt
                     ? new Date(article.updatedAt).toLocaleDateString()
                     : "-"}
                 </TableCell>
-                <TableCell align="center" sx={{backgroundColor: getStatus(article) === "Published" ? "steelblue" : getStatus(article) === "Expired" ? "crimson" : "orange", color: "white"}}>{getStatus(article)}</TableCell>
-                <TableCell align="right">
-                  <Stack direction="row">
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor:
+                      getStatus(article) === "Published"
+                        ? "steelblue"
+                        : getStatus(article) === "Expired"
+                        ? "crimson"
+                        : "orange",
+                    color: "white",
+                  }}
+                >
+                  {getStatus(article)}
+                </TableCell>
+                <TableCell align="center">
+                  <Stack direction="row" sx={{ justifyContent: "flex-end" }}>
                     <Button
                       endIcon={<EditNoteIcon />}
                       sx={{

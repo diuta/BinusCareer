@@ -89,17 +89,6 @@ export default function CategoryManager() {
     setSortBy(event.target.value);
   };
 
-  const StyledTableCell = styled(TableCell)(() => ({
-    [`&.${tableCellClasses.head}`]: {
-      fontSize: 15,
-      color: grey[700],
-      fontWeight: 700,
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 12,
-    },
-  }));
-
   return (
     <Paper elevation={5} sx={{ padding: 5 }}>
       <Typography variant="h3" className="text-center" sx={{ mb: 3, color: "#2196f3" }}>
@@ -108,7 +97,6 @@ export default function CategoryManager() {
       <Stack direction="column" spacing={2} sx={{ mb: 3 }}>
         <InputLabel id="search-label">Search</InputLabel>
         <TextField
-          label="Search by category name"
           variant="outlined"
           fullWidth
           value={searchTerm}
@@ -144,9 +132,9 @@ export default function CategoryManager() {
             }}
           >
             <TableRow>
-              <StyledTableCell align="left">ID.</StyledTableCell>
-              <StyledTableCell align="right">CATEGORY NAME</StyledTableCell>
-              <StyledTableCell align="right">ACTION</StyledTableCell>
+              <TableCell align="left">ID.</TableCell>
+              <TableCell align="right">CATEGORY NAME</TableCell>
+              <TableCell align="right">ACTION</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -49,19 +49,30 @@ export default function CarouselManager() {
     let result = [...carousels];
 
     if (searchTerm.trim() !== "") {
-      result = result.filter((carousel) =>
-        carousel.title.toLowerCase().includes(searchTerm.toLowerCase())
+      result = result.filter(
+        (carousel) =>
+          carousel.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          categories
+            .find((category) => category.id === carousel.categoryId)
+            ?.name.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          carousel.publishedBy.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     if (categorySelected && categorySelected !== "All") {
-      result = result.filter((article) =>
-        categories.find((category) => category.id === article.categoryId)?.name.toLowerCase().includes(categorySelected.toLowerCase())
+      result = result.filter((carousel) =>
+        categories
+          .find((category) => category.id === carousel.categoryId)
+          ?.name.toLowerCase()
+          .includes(categorySelected.toLowerCase())
       );
     }
 
     if (statusSelected && statusSelected !== "All") {
-      result = result.filter((article) => getStatus(article).toLowerCase().includes(statusSelected.toLowerCase()));
+      result = result.filter((carousel) =>
+        getStatus(carousel).toLowerCase().includes(statusSelected.toLowerCase())
+      );
     }
 
     setFilteredCarousels(result);
@@ -120,42 +131,36 @@ export default function CarouselManager() {
     setStatusSelected(event.target.value);
   };
 
-  const StyledTableCell = styled(TableCell)(() => ({
-    [`&.${tableCellClasses.head}`]: {
-      fontSize: 15,
-      color: grey[700],
-      fontWeight: 700,
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 12,
-    },
-  }));
-
   return (
     <Paper elevation={5} sx={{ padding: 5 }}>
-      <Typography variant="h3" className="text-center" sx={{ mb: 3, color: "#2196f3" }}>
+      <Typography
+        variant="h3"
+        className="text-center"
+        sx={{ mb: 3, color: "#2196f3" }}
+      >
         CAROUSEL LIST
       </Typography>
       <Stack direction="column" spacing={2} sx={{ mb: 3 }}>
         <InputLabel id="search-label">Search</InputLabel>
         <TextField
-          label="Type a keyword"
           variant="outlined"
           fullWidth
           value={searchTerm}
           onChange={handleSearchChange}
           size="small"
         />
-        <Stack direction="row" sx={{justifyContent: "space-between", width: "100%"}}>
-          <Box>
+        <Stack
+          direction="row"
+          sx={{ justifyContent: "space-between", width: "100%" }}
+          spacing={2}
+        >
+          <Box sx={{ width: { xs: "100%", md: "48%" } }}>
             <InputLabel id="category-select-label">Category Type</InputLabel>
             <Select
               id="category-select"
               value={categorySelected}
               onChange={handleCategoryChange}
-              sx={{
-                width: 650
-              }}
+              fullWidth
             >
               <MenuItem value="All">All</MenuItem>
               {categories.map((category) => (
@@ -163,15 +168,13 @@ export default function CarouselManager() {
               ))}
             </Select>
           </Box>
-          <Box>
+          <Box sx={{ width: { xs: "100%", md: "48%" } }}>
             <InputLabel id="status-select-label">Status</InputLabel>
             <Select
               id="status-select"
               value={statusSelected}
               onChange={handleStatusChange}
-              sx={{
-                width: 650
-              }}
+              fullWidth
             >
               <MenuItem value="All">All</MenuItem>
               <MenuItem value="Published">Published</MenuItem>
@@ -180,16 +183,19 @@ export default function CarouselManager() {
             </Select>
           </Box>
         </Stack>
-          <Box>
-            <Button variant="contained" color="primary" sx={{
-              width: "15vh"
+        <Box>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              width: "15vh",
             }}
             component={Link}
             href="/add-carousel"
-            >
-              Add Carousel
-            </Button>
-          </Box>
+          >
+            Add Carousel
+          </Button>
+        </Box>
       </Stack>
 
       <TableContainer component={Paper} elevation={0}>
@@ -200,15 +206,15 @@ export default function CarouselManager() {
             }}
           >
             <TableRow>
-              <StyledTableCell align="right">NO.</StyledTableCell>
-              <StyledTableCell align="right">CAROUSEL NAME</StyledTableCell>
-              <StyledTableCell align="right">CAROUSEL CATEGORY</StyledTableCell>
-              <StyledTableCell align="right">PUBLISHED BY</StyledTableCell>
-              <StyledTableCell align="right">DATE PUBLISHED</StyledTableCell>
-              <StyledTableCell align="right">EDITED BY</StyledTableCell>
-              <StyledTableCell align="right">LAST EDITED</StyledTableCell>
-              <StyledTableCell align="right">STATUS</StyledTableCell>
-              <StyledTableCell align="right">ACTION</StyledTableCell>
+              <TableCell align="center">NO.</TableCell>
+              <TableCell align="center">CAROUSEL NAME</TableCell>
+              <TableCell align="center">CAROUSEL CATEGORY</TableCell>
+              <TableCell align="center">PUBLISHED BY</TableCell>
+              <TableCell align="center">DATE PUBLISHED</TableCell>
+              <TableCell align="center">EDITED BY</TableCell>
+              <TableCell align="center">LAST EDITED</TableCell>
+              <TableCell align="center">STATUS</TableCell>
+              <TableCell align="center">ACTION</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -217,22 +223,43 @@ export default function CarouselManager() {
                 <TableCell component="th" scope="carousel">
                   {index + 1}
                 </TableCell>
-                <TableCell align="right">
-                  <Typography
-                    variant="body1"
-                    color={blue[400]}
-                  >
+                <TableCell align="center">
+                  <Typography variant="body1" color={blue[400]}>
                     {carousel.title}
                   </Typography>
                 </TableCell>
-                <TableCell align="right">{categories.find(c => c.id === carousel.categoryId)?.name || "-"}</TableCell>
-                <TableCell align="right">{carousel.publishedBy}</TableCell>
-                <TableCell align="right">{new Date(carousel.publishedAt).toLocaleDateString()}</TableCell>
-                <TableCell align="right">{carousel.updatedBy === "" ? "-" : carousel.updatedBy}</TableCell>
-                <TableCell align="right">{carousel.updatedAt ? new Date(carousel.updatedAt).toLocaleDateString() : "-"}</TableCell>
-                <TableCell align="center" sx={{backgroundColor: getStatus(carousel) === "Published" ? "steelblue" : getStatus(carousel) === "Expired" ? "crimson" : "orange", color: "white"}}>{getStatus(carousel)}</TableCell>
-                <TableCell align="right">
-                  <Stack direction="row">
+                <TableCell align="center">
+                  {categories.find((c) => c.id === carousel.categoryId)?.name ||
+                    "-"}
+                </TableCell>
+                <TableCell align="center">{carousel.publishedBy}</TableCell>
+                <TableCell align="center">
+                  {new Date(carousel.publishedAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell align="center">
+                  {carousel.updatedBy === "" ? "-" : carousel.updatedBy}
+                </TableCell>
+                <TableCell align="center">
+                  {carousel.updatedAt
+                    ? new Date(carousel.updatedAt).toLocaleDateString()
+                    : "-"}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor:
+                      getStatus(carousel) === "Published"
+                        ? "steelblue"
+                        : getStatus(carousel) === "Expired"
+                        ? "crimson"
+                        : "orange",
+                    color: "white",
+                  }}
+                >
+                  {getStatus(carousel)}
+                </TableCell>
+                <TableCell align="center">
+                  <Stack direction="row" sx={{ justifyContent: "flex-end" }}>
                     <Button
                       endIcon={<EditNoteIcon />}
                       sx={{
