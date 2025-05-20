@@ -18,7 +18,6 @@ namespace backend.Data
         {
             base.OnModelCreating(modelBuilder);
             
-            // Seed data or other configurations can be added here
         }
     }
 } 

@@ -188,7 +188,7 @@ export default function CarouselManager() {
             variant="contained"
             color="primary"
             sx={{
-              width: "15vh",
+              width: "20vh",
             }}
             component={Link}
             href="/add-carousel"

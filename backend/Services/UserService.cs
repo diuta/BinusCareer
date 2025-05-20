@@ -42,8 +42,6 @@ namespace backend.Services
             if (user == null || !BC.Verify(model.Password, user.HashedPassword))
                 return null;
 
-            if (user == null) return null;
-
             var jwtToken = generateJwtToken(user);
             var refreshToken = generateRefreshToken(ipAddress);
 

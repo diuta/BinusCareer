@@ -28,7 +28,6 @@ export default function ArticleDetail() {
     setArticle(response.data);
   };
 
-  // Redirect logged-in users to protected routes
   if (isLoggedIn && location.pathname.startsWith(publicPath)) {
     return (
       <Navigate

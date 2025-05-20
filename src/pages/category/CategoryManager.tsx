@@ -115,7 +115,7 @@ export default function CategoryManager() {
           <MenuItem value="id">Category ID</MenuItem>
         </Select>
         <Button variant="contained" color="primary" sx={{
-            width: "15vh"
+            width: "20vh"
           }}
           component={Link}
           href="/add-category"
@@ -133,7 +133,7 @@ export default function CategoryManager() {
           >
             <TableRow>
               <TableCell align="left">ID.</TableCell>
-              <TableCell align="right">CATEGORY NAME</TableCell>
+              <TableCell align="left">CATEGORY NAME</TableCell>
               <TableCell align="right">ACTION</TableCell>
             </TableRow>
           </TableHead>
@@ -143,7 +143,7 @@ export default function CategoryManager() {
                 <TableCell component="th" scope="category">
                   {category.id}
                 </TableCell>
-                <TableCell align="right">
+                <TableCell align="left">
                   <Typography
                     variant="body1"
                     color={blue[400]}

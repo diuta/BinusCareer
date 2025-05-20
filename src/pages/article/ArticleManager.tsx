@@ -152,7 +152,6 @@ export default function ArticleManager() {
           spacing={2}
           sx={{
             justifyContent: "space-between",
-            width: "100%",
           }}
         >
           <Box sx={{ width: { xs: "100%", md: "48%" } }}>
@@ -189,7 +188,7 @@ export default function ArticleManager() {
             variant="contained"
             color="primary"
             sx={{
-              width: "15vh",
+              width: "20vh",
             }}
             component={Link}
             href="/add-article"
