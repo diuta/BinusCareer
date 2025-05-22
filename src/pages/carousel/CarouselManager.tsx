@@ -215,7 +215,6 @@ export default function CarouselManager() {
               <StyledTableCell align="center">EXPIRED DATE</StyledTableCell>
               <StyledTableCell align="center">LAST EDITED</StyledTableCell>
               <StyledTableCell align="center">EDITED BY</StyledTableCell>
-              <StyledTableCell align="center">VIEWERS</StyledTableCell>
               <StyledTableCell align="center">STATUS</StyledTableCell>
               <StyledTableCell align="center">ACTION</StyledTableCell>
             </TableRow>
@@ -248,9 +247,6 @@ export default function CarouselManager() {
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   {carousel.updatedBy === "" ? "-" : carousel.updatedBy}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  viewers has not been implemented
                 </StyledTableCell>
                 <StyledTableCell
                   align="center"
