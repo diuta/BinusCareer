@@ -44,7 +44,7 @@ export default function ArticleCard() {
 
   const getArticles = async () => {
     const response: AxiosResponse = await apiClient.get(
-      `${ApiService.getArticles}`
+      `${ApiService.articles}`
     );
     const filteredArticles = response.data.filter((article: IArticle) => getStatus(article) === "Published");
     setArticles(filteredArticles);

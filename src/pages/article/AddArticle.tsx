@@ -23,7 +23,7 @@ export default function AddArticle() {
     content: "",
     image: "",
     categoryId: 1,
-    publishedBy: user?.name,
+    createdBy: user?.name,
     postedDate: "",
     expiredDate: "",
   });
@@ -34,7 +34,7 @@ export default function AddArticle() {
   }, [formData]);
 
   const handleClick = async () => {
-    await apiClient.post(ApiService.addArticle, formData);
+    await apiClient.post(ApiService.articles, formData);
     showModal({
       title: "Article Added",
       message: `Article\n${formData.title}\nSuccessfully Added!`,
@@ -49,7 +49,7 @@ export default function AddArticle() {
   };
 
   const fetchCategories = async () => {
-    const response = await axios.get(ApiService.getCategories);
+    const response = await axios.get(ApiService.categories);
     setCategories(response.data);
   };
 

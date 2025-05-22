@@ -28,6 +28,7 @@ import apiClient from "../../config/api-client";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import { blue, grey } from "@mui/material/colors";
+import { fontWeight } from "@mui/system";
 
 export default function ArticleManager() {
   const [articles, setArticles] = useState<IArticle[]>([]);
@@ -54,7 +55,7 @@ export default function ArticleManager() {
             .find((category) => category.id === article.categoryId)
             ?.name.toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          article.publishedBy.toLowerCase().includes(searchTerm.toLowerCase())
+          article.createdBy.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -91,7 +92,7 @@ export default function ArticleManager() {
 
   const getArticles = async () => {
     const response: AxiosResponse = await apiClient.get(
-      `${ApiService.getArticles}`
+      `${ApiService.articles}`
     );
     setArticles(response.data);
     setFilteredArticles(response.data);
@@ -99,18 +100,18 @@ export default function ArticleManager() {
 
   const getCategories = async () => {
     const response: AxiosResponse = await apiClient.get(
-      `${ApiService.getCategories}`
+      `${ApiService.categories}`
     );
     setCategories(response.data);
   };
 
   const handleEdit = (articleId: string | number) => {
-    navigate(`/edit-article/${articleId}`);
+    navigate(`/article/${articleId}/edit`);
   };
 
   const handleDelete = async (articleId: string | number) => {
     try {
-      await apiClient.delete(`${ApiService.getArticles}/${articleId}`);
+      await apiClient.delete(`${ApiService.articles}/${articleId}`);
       getArticles();
     } catch (error) {
       console.error("Error deleting article:", error);
@@ -128,6 +129,10 @@ export default function ArticleManager() {
   const handleStatusChange = (event: any) => {
     setStatusSelected(event.target.value);
   };
+
+  const StyledTableCell = styled(TableCell)(() => ({
+    fontSize: 11,
+  }));
 
   return (
     <Paper elevation={5} sx={{ padding: 5 }}>
@@ -191,7 +196,7 @@ export default function ArticleManager() {
               width: "20vh",
             }}
             component={Link}
-            href="/add-article"
+            href="/article/add"
           >
             Add Article
           </Button>
@@ -206,53 +211,66 @@ export default function ArticleManager() {
             }}
           >
             <TableRow>
-              <TableCell align="center">NO.</TableCell>
-              <TableCell align="center">ARTICLE NAME</TableCell>
-              <TableCell align="center">ARTICLE CATEGORY</TableCell>
-              <TableCell align="center">PUBLISHED BY</TableCell>
-              <TableCell align="center">DATE PUBLISHED</TableCell>
-              <TableCell align="center">EDITED BY</TableCell>
-              <TableCell align="center">LAST EDITED</TableCell>
-              <TableCell align="center">STATUS</TableCell>
-              <TableCell align="center">ACTION</TableCell>
+              <StyledTableCell align="center">NO.</StyledTableCell>
+              <StyledTableCell align="center">ARTICLE NAME</StyledTableCell>
+              <StyledTableCell align="center">ARTICLE CATEGORY</StyledTableCell>
+              <StyledTableCell align="center">CREATED DATE</StyledTableCell>
+              <StyledTableCell align="center">CREATED BY</StyledTableCell>
+              <StyledTableCell align="center">PUBLISHED DATE</StyledTableCell>
+              <StyledTableCell align="center">EXPIRED DATE</StyledTableCell>
+              <StyledTableCell align="center">LAST EDITED</StyledTableCell>
+              <StyledTableCell align="center">EDITED BY</StyledTableCell>
+              <StyledTableCell align="center">VIEWERS</StyledTableCell>
+              <StyledTableCell align="center">STATUS</StyledTableCell>
+              <StyledTableCell align="center">ACTION</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredArticles.map((article, index) => (
               <TableRow key={article.id}>
-                <TableCell component="th" scope="article">
+                <StyledTableCell component="th" scope="article">
                   {index + 1}
-                </TableCell>
-                <TableCell align="center">
+                </StyledTableCell>
+                <StyledTableCell align="center">
                   <Typography
                     variant="body1"
                     color={blue[400]}
                     component={Link}
                     href={`/article/${article.id}`}
+                    fontSize={10}
                   >
                     {article.title}
                   </Typography>
-                </TableCell>
-                <TableCell align="center">
+                </StyledTableCell>
+                <StyledTableCell align="center">
                   {
                     categories.find(
                       (category) => category.id === article.categoryId
                     )?.name
                   }
-                </TableCell>
-                <TableCell align="center">{article.publishedBy}</TableCell>
-                <TableCell align="center">
-                  {new Date(article.publishedAt).toLocaleDateString()}
-                </TableCell>
-                <TableCell align="center">
-                  {article.updatedBy === "" ? "-" : article.updatedBy}
-                </TableCell>
-                <TableCell align="center">
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {new Date(article.createdDate).toLocaleDateString()}
+                </StyledTableCell>
+                <StyledTableCell align="center">{article.createdBy}</StyledTableCell>
+                <StyledTableCell align="center">
+                  {new Date(article.postedDate).toLocaleDateString()}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {new Date(article.expiredDate).toLocaleDateString()}
+                </StyledTableCell>
+                <StyledTableCell align="center">
                   {article.updatedAt
                     ? new Date(article.updatedAt).toLocaleDateString()
                     : "-"}
-                </TableCell>
-                <TableCell
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {article.updatedBy === "" ? "-" : article.updatedBy}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  viewers has not been implemented
+                </StyledTableCell>
+                <StyledTableCell
                   align="center"
                   sx={{
                     backgroundColor:
@@ -265,8 +283,8 @@ export default function ArticleManager() {
                   }}
                 >
                   {getStatus(article)}
-                </TableCell>
-                <TableCell align="center">
+                </StyledTableCell>
+                <StyledTableCell align="center">
                   <Stack direction="row" sx={{ justifyContent: "flex-end" }}>
                     <Button
                       endIcon={<EditNoteIcon />}
@@ -293,7 +311,7 @@ export default function ArticleManager() {
                       onClick={() => handleDelete(article.id)}
                     />
                   </Stack>
-                </TableCell>
+                </StyledTableCell>
               </TableRow>
             ))}
           </TableBody>

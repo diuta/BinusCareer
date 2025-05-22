@@ -47,15 +47,15 @@ namespace backend.Controllers
         {
             DateTime carouselDataPostedDate = carouselData.PostedDate;
             DateTime carouselDataExpiredDate = carouselData.ExpiredDate;
-            DateTime carouselPublishedAt = DateTime.Now;
+            DateTime carouselCreatedDate = DateTime.Now;
 
             var carousel = new Carousel(
                 image: carouselData.Image,
                 title: carouselData.Title,
                 description: carouselData.Description,
                 categoryId: carouselData.CategoryId,
-                publishedBy: carouselData.PublishedBy,
-                publishedAt: carouselPublishedAt,
+                createdBy: carouselData.CreatedBy,
+                createdDate: carouselCreatedDate,
                 updatedBy: carouselData.UpdatedBy,
                 updatedAt: carouselData.UpdatedAt,
                 postedDate: carouselDataPostedDate,
@@ -83,7 +83,6 @@ namespace backend.Controllers
             prevCarousel.Image = carousel.Image;
             prevCarousel.Description = carousel.Description;
             prevCarousel.CategoryId = carousel.CategoryId;
-            prevCarousel.PublishedBy = carousel.PublishedBy;
             prevCarousel.UpdatedBy = carousel.UpdatedBy;
             prevCarousel.UpdatedAt = DateTime.Now;
             prevCarousel.PostedDate = carousel.PostedDate;

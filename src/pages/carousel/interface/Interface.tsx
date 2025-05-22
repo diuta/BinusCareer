@@ -4,8 +4,8 @@ export interface ICarousel {
   image: string;
   description: string;
   categoryId: number;
-  publishedBy: string;
-  publishedAt: Date;
+  createdBy: string;
+  createdDate: Date;
   updatedBy: string;
   updatedAt: Date;
   postedDate: Date;

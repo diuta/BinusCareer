@@ -26,23 +26,13 @@ export const ApiService: IApi = {
   refreshToken: `${baseURL}/api/User/refresh-token`,
 
   // Carousel
-  getCarousels: `${baseURL}/api/Carousel`,
-  getCarousel: `${baseURL}/api/Carousel`,
-  addCarousel: `${baseURL}/api/Carousel`,
-  editCarousel: `${baseURL}/api/Carousel`,
+  carousels: `${baseURL}/api/Carousel`,
 
   // Category
-  getCategories: `${baseURL}/api/Category`,
-  getCategory: `${baseURL}/api/Category`,
-  addCategory: `${baseURL}/api/Category`,
-  editCategory: `${baseURL}/api/Category`,
+  categories: `${baseURL}/api/Category`,
 
   // Article
-  getArticles: `${baseURL}/api/Article`,
-  getArticle: `${baseURL}/api/Article`,
-  addArticle: `${baseURL}/api/Article`,
-  deleteArticle: `${baseURL}/api/Article`,
-  editArticle: `${baseURL}/api/Article`,
+  articles: `${baseURL}/api/Article`,
 
   // User
   login: `${baseURL}/api/User/login`,

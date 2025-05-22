@@ -19,7 +19,7 @@ export default function AddCarousel() {
     description: "",
     image: "",
     categoryId: 0,
-    publishedBy: user?.name,
+    createdBy: user?.name,
     postedDate: "",
     expiredDate: "",
   });
@@ -30,12 +30,12 @@ export default function AddCarousel() {
   }, [formData]);
 
   const fetchCategories = async () => {
-    const response = await axios.get(ApiService.getCategories);
+    const response = await axios.get(ApiService.categories);
     setCategories(response.data);
   };
 
   const handleClick = async () => {
-    await axios.post(ApiService.addCarousel, formData);
+    await axios.post(ApiService.carousels, formData);
     showModal({
       title: "Carousel Added",
       message: `Carousel\n${formData.title}\nSuccessfully Added!`,
@@ -43,7 +43,7 @@ export default function AddCarousel() {
         buttonTitle: "Continue",
         variant: "success",
         onOk: () => {
-          navigate("/carousel-manager");
+          navigate("/carousel/manager");
         },
       },
     });

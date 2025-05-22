@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { selectAuthUser } from "../../store/auth/selector";
 
 export default function ArticleDetail() {
-  const [article, setArticle] = useState<IArticle | undefined>();
+  const [article, setArticle] = useState<IArticle>();
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const user = useSelector(selectAuthUser);
@@ -23,7 +23,7 @@ export default function ArticleDetail() {
 
   const getArticleDetail = async () => {
     const response: AxiosResponse = await apiClient.get(
-      `${ApiService.getArticle}/${id}`
+      `${ApiService.articles}/${id}`
     );
     setArticle(response.data);
   };

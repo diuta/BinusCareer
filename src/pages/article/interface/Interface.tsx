@@ -4,8 +4,8 @@ export interface IArticle {
   content: string;
   image: string;
   categoryId: number;
-  publishedBy: string;
-  publishedAt: Date;
+  createdBy: string;
+  createdDate: Date;
   updatedBy: string;
   updatedAt: Date;
   postedDate: Date;

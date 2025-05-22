@@ -37,7 +37,6 @@ export default function EditCarousel() {
     description: "",
     image: "",
     categoryId: 0,
-    publishedBy: "",
     updatedBy: "",
     postedDate: "",
     expiredDate: "",
@@ -51,12 +50,12 @@ export default function EditCarousel() {
   }, [id]);
 
   const fetchCategories = async () => {
-    const response = await axios.get(ApiService.getCategories);
+    const response = await axios.get(ApiService.categories);
     setCategories(response.data);
   };
 
   const fetchCarouselData = async () => {
-    const response = await apiClient.get(`${ApiService.getCarousel}/${id}`);
+    const response = await apiClient.get(`${ApiService.carousels}/${id}`);
     const carouselData = response.data;
 
     setFormData({
@@ -65,7 +64,6 @@ export default function EditCarousel() {
       description: carouselData.description || "",
       image: carouselData.image || "",
       categoryId: carouselData.categoryId,
-      publishedBy: carouselData.publishedBy || "",
       updatedBy: user?.name,
       postedDate: carouselData.postedDate.split("T")[0],
       expiredDate: carouselData.expiredDate.split("T")[0],
@@ -74,7 +72,7 @@ export default function EditCarousel() {
 
   const handleUpdateCarousel = async () => {
     console.log(formData);
-    await apiClient.put(`${ApiService.getCarousel}/${id}`, formData);
+    await apiClient.put(`${ApiService.carousels}/${id}`, formData);
     showModal({
       title: "Carousel Updated",
       message: `Carousel\n${formData.title}\nSuccessfully Updated!`,
@@ -82,7 +80,7 @@ export default function EditCarousel() {
         buttonTitle: "Continue",
         variant: "success",
         onOk: () => {
-          navigate("/carousel-manager");
+          navigate("/carousel/manager");
         },
       },
     });

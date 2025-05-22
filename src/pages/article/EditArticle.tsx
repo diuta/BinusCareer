@@ -23,7 +23,7 @@ export default function EditArticle() {
     content: "",
     image: "",
     categoryId: 0,
-    publishedBy: "",
+    createdBy: "",
     updatedBy: "",
     postedDate: "",
     expiredDate: "",
@@ -35,7 +35,7 @@ export default function EditArticle() {
   }, [id]);
 
   const fetchArticleData = async () => {
-    const response = await apiClient.get(`${ApiService.getArticle}/${id}`);
+    const response = await apiClient.get(`${ApiService.articles}/${id}`);
     const articleData = response.data;
     console.log(articleData);
 
@@ -47,18 +47,18 @@ export default function EditArticle() {
       postedDate: articleData.postedDate.split("T")[0],
       expiredDate: articleData.expiredDate.split("T")[0],
       categoryId: articleData.categoryId,
-      publishedBy: articleData.publishedBy || "",
+      createdBy: articleData.createdBy || "",
       updatedBy: user?.name,
     });
   };
 
   const fetchCategories = async () => {
-    const response = await axios.get(ApiService.getCategories);
+    const response = await axios.get(ApiService.categories);
     setCategories(response.data);
   };
 
   const handleUpdateArticle = async () => {
-    await apiClient.put(`${ApiService.editArticle}/${id}`, formData);
+    await apiClient.put(`${ApiService.articles}/${id}`, formData);
     showModal({
       title: "Article Updated",
       message: `Article\n${formData.title}\nSuccessfully Updated!`,

@@ -27,7 +27,7 @@ export default function ManageButton() {
           width: "90%",
         }}
         component={Link}
-        href="/article-manager"
+        href="/article/manager"
       >
         Article Manager
       </Button>
@@ -41,7 +41,7 @@ export default function ManageButton() {
           width: "90%",
         }}
         component={Link}
-        href="/carousel-manager"
+        href="/carousel/manager"
       >
         Carousel Manager
       </Button>
@@ -55,7 +55,7 @@ export default function ManageButton() {
           width: "90%",
         }}
         component={Link}
-        href="/category-manager"
+        href="/category/manager"
       >
         Category Manager
       </Button>

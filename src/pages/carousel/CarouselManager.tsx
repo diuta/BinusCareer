@@ -56,7 +56,7 @@ export default function CarouselManager() {
             .find((category) => category.id === carousel.categoryId)
             ?.name.toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          carousel.publishedBy.toLowerCase().includes(searchTerm.toLowerCase())
+          carousel.createdBy.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -80,7 +80,7 @@ export default function CarouselManager() {
 
   const getCarousels = async () => {
     const response: AxiosResponse = await apiClient.get(
-      `${ApiService.getCarousels}`
+      `${ApiService.carousels}`
     );
     setCarousels(response.data);
     setFilteredCarousels(response.data);
@@ -88,7 +88,7 @@ export default function CarouselManager() {
 
   const getCategories = async () => {
     const response: AxiosResponse = await apiClient.get(
-      `${ApiService.getCategories}`
+      `${ApiService.categories}`
     );
     setCategories(response.data);
   };
@@ -107,16 +107,12 @@ export default function CarouselManager() {
   };
 
   const handleEdit = (carouselId: string | number) => {
-    navigate(`/edit-carousel/${carouselId}`);
+    navigate(`/carousel/${carouselId}/edit`);
   };
 
   const handleDelete = async (carouselId: string | number) => {
-    try {
-      await apiClient.delete(`${ApiService.getCarousels}/${carouselId}`);
-      getCarousels();
-    } catch (error) {
-      console.error("Error deleting carousel:", error);
-    }
+    await apiClient.delete(`${ApiService.carousels}/${carouselId}`);
+    getCarousels();
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,6 +126,10 @@ export default function CarouselManager() {
   const handleStatusChange = (event: any) => {
     setStatusSelected(event.target.value);
   };
+
+  const StyledTableCell = styled(TableCell)(() => ({
+    fontSize: 11,
+  }));
 
   return (
     <Paper elevation={5} sx={{ padding: 5 }}>
@@ -191,7 +191,7 @@ export default function CarouselManager() {
               width: "20vh",
             }}
             component={Link}
-            href="/add-carousel"
+            href="/carousel/add"
           >
             Add Carousel
           </Button>
@@ -206,45 +206,53 @@ export default function CarouselManager() {
             }}
           >
             <TableRow>
-              <TableCell align="center">NO.</TableCell>
-              <TableCell align="center">CAROUSEL NAME</TableCell>
-              <TableCell align="center">CAROUSEL CATEGORY</TableCell>
-              <TableCell align="center">PUBLISHED BY</TableCell>
-              <TableCell align="center">DATE PUBLISHED</TableCell>
-              <TableCell align="center">EDITED BY</TableCell>
-              <TableCell align="center">LAST EDITED</TableCell>
-              <TableCell align="center">STATUS</TableCell>
-              <TableCell align="center">ACTION</TableCell>
+              <StyledTableCell align="center">NO.</StyledTableCell>
+              <StyledTableCell align="center">CAROUSEL NAME</StyledTableCell>
+              <StyledTableCell align="center">CAROUSEL CATEGORY</StyledTableCell>
+              <StyledTableCell align="center">CREATED DATE</StyledTableCell>
+              <StyledTableCell align="center">CREATED BY</StyledTableCell>
+              <StyledTableCell align="center">PUBLISHED DATE</StyledTableCell>
+              <StyledTableCell align="center">EXPIRED DATE</StyledTableCell>
+              <StyledTableCell align="center">LAST EDITED</StyledTableCell>
+              <StyledTableCell align="center">EDITED BY</StyledTableCell>
+              <StyledTableCell align="center">VIEWERS</StyledTableCell>
+              <StyledTableCell align="center">STATUS</StyledTableCell>
+              <StyledTableCell align="center">ACTION</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredCarousels.map((carousel, index) => (
               <TableRow key={carousel.id}>
-                <TableCell component="th" scope="carousel">
+                <StyledTableCell component="th" scope="carousel">
                   {index + 1}
-                </TableCell>
-                <TableCell align="center">
+                </StyledTableCell>
+                <StyledTableCell align="center">
                   <Typography variant="body1" color={blue[400]}>
                     {carousel.title}
                   </Typography>
-                </TableCell>
-                <TableCell align="center">
+                </StyledTableCell>
+                <StyledTableCell align="center">
                   {categories.find((c) => c.id === carousel.categoryId)?.name ||
                     "-"}
-                </TableCell>
-                <TableCell align="center">{carousel.publishedBy}</TableCell>
-                <TableCell align="center">
-                  {new Date(carousel.publishedAt).toLocaleDateString()}
-                </TableCell>
-                <TableCell align="center">
-                  {carousel.updatedBy === "" ? "-" : carousel.updatedBy}
-                </TableCell>
-                <TableCell align="center">
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {new Date(carousel.createdDate).toLocaleDateString()}
+                </StyledTableCell>
+                <StyledTableCell align="center">{carousel.createdBy}</StyledTableCell>
+                <StyledTableCell align="center">{new Date(carousel.postedDate).toLocaleDateString()}</StyledTableCell>
+                <StyledTableCell align="center">{new Date(carousel.expiredDate).toLocaleDateString()}</StyledTableCell>
+                <StyledTableCell align="center">
                   {carousel.updatedAt
                     ? new Date(carousel.updatedAt).toLocaleDateString()
                     : "-"}
-                </TableCell>
-                <TableCell
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {carousel.updatedBy === "" ? "-" : carousel.updatedBy}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  viewers has not been implemented
+                </StyledTableCell>
+                <StyledTableCell
                   align="center"
                   sx={{
                     backgroundColor:
@@ -257,8 +265,8 @@ export default function CarouselManager() {
                   }}
                 >
                   {getStatus(carousel)}
-                </TableCell>
-                <TableCell align="center">
+                </StyledTableCell>
+                <StyledTableCell align="center">
                   <Stack direction="row" sx={{ justifyContent: "flex-end" }}>
                     <Button
                       endIcon={<EditNoteIcon />}
@@ -285,7 +293,7 @@ export default function CarouselManager() {
                       onClick={() => handleDelete(carousel.id)}
                     />
                   </Stack>
-                </TableCell>
+                </StyledTableCell>
               </TableRow>
             ))}
           </TableBody>

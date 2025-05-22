@@ -57,7 +57,6 @@ namespace backend.Controllers
                 return NotFound();
             }
             
-            // Update properties individually
             existingArticle.Title = article.Title;
             existingArticle.Image = article.Image;
             existingArticle.Content = article.Content;
@@ -78,15 +77,15 @@ namespace backend.Controllers
         {
             DateTime articleDataPostedDate = articleData.PostedDate;
             DateTime articleDataExpiredDate = articleData.ExpiredDate;
-            DateTime articlePublishedAt = DateTime.Now;
+            DateTime articleCreatedDate = DateTime.Now;
 
             var article = new Article(
                 title: articleData.Title,
                 image: articleData.Image,
                 content: articleData.Content,
                 categoryId: articleData.CategoryId,
-                publishedBy: articleData.PublishedBy,
-                publishedAt: articlePublishedAt,
+                createdBy: articleData.CreatedBy,
+                createdDate: articleCreatedDate,
                 updatedBy: articleData.UpdatedBy,
                 updatedAt: articleData.UpdatedAt,
                 postedDate: articleDataPostedDate,

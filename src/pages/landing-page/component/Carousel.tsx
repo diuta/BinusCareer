@@ -22,7 +22,7 @@ export default function CarouselView() {
 
   const getCarouselData = async () => {
     const response: AxiosResponse = await apiClient.get(
-      `${ApiService.getCarousels}`
+      `${ApiService.carousels}`
     );
     const filteredItems = response.data.filter((carousel: ICarousel) => getStatus(carousel) === "Published");
     setItems(filteredItems);

@@ -15,8 +15,8 @@ namespace backend.Models
         [ForeignKey("CategoryId")]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
-        public string PublishedBy { get; set; }
-        public DateTime PublishedAt { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
         #nullable enable
         public string? UpdatedBy { get; set; }
         #nullable enable
@@ -24,14 +24,14 @@ namespace backend.Models
         public DateTime PostedDate { get; set; }
         public DateTime ExpiredDate { get; set; }
 
-        public Carousel(string image, string title, string description, int categoryId, string publishedBy, DateTime publishedAt, DateTime postedDate, DateTime expiredDate, string? updatedBy = null, DateTime? updatedAt = null)
+        public Carousel(string image, string title, string description, int categoryId, string createdBy, DateTime createdDate, DateTime postedDate, DateTime expiredDate, string? updatedBy = null, DateTime? updatedAt = null)
         {
             Image = image;
             Title = title;
             Description = description;
             CategoryId = categoryId;
-            PublishedBy = publishedBy;
-            PublishedAt = publishedAt;
+            CreatedBy = createdBy;
+            CreatedDate = createdDate;
             UpdatedBy = updatedBy;
             UpdatedAt = updatedAt;
             PostedDate = postedDate;
