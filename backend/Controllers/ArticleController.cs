@@ -29,9 +29,15 @@ namespace backend.Controllers
 
         // GET: api/Article/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Article>> GetArticle(int id)
+        public async Task<ActionResult<Article>> GetArticle(int id, [FromQuery] bool count = true)
         {
             var article = await _context.Articles.FindAsync(id);
+
+            if (count)
+            {
+                article.TotalViews += 1;
+                await _context.SaveChangesAsync();
+            }
 
             if (article == null)
             {

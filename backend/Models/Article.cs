@@ -23,8 +23,9 @@ namespace backend.Models
         public DateTime? UpdatedAt { get; set; }
         public DateTime PostedDate { get; set; }
         public DateTime ExpiredDate { get; set; }
+        public int TotalViews { get; set; }
 
-        public Article(string title, string image, string content, int categoryId, string createdBy, DateTime createdDate, DateTime postedDate, DateTime expiredDate, string? updatedBy = null, DateTime? updatedAt = null)
+        public Article(string title, string image, string content, int categoryId, string createdBy, DateTime createdDate, DateTime postedDate, DateTime expiredDate, string? updatedBy = null, DateTime? updatedAt = null, int totalViews = 0)
         {
             Title = title;
             Image = image;
@@ -36,6 +37,7 @@ namespace backend.Models
             UpdatedAt = updatedAt;
             PostedDate = postedDate;
             ExpiredDate = expiredDate;
+            TotalViews = totalViews;
         }
         
         public Article()
