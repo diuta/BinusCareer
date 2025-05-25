@@ -8,6 +8,7 @@ import { ApiService } from "../../constants/ApiService.Dev";
 import { ICategory } from "./interface/Interface";
 import { useSelector } from "react-redux";
 import { selectAuthUser } from "../../store/auth/selector";
+import apiClient from "../../config/api-client";
 
 export default function AddCarousel() {
   const navigate = useNavigate();
@@ -17,16 +18,16 @@ export default function AddCarousel() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    image: "",
-    categoryId: 0,
+    image: null,
+    categoryId: 1,
     createdBy: user?.name,
     postedDate: "",
     expiredDate: "",
   });
 
   useEffect(() => {
-    console.log(formData);
     fetchCategories();
+    console.log(formData);
   }, [formData]);
 
   const fetchCategories = async () => {
@@ -35,7 +36,21 @@ export default function AddCarousel() {
   };
 
   const handleClick = async () => {
-    await axios.post(ApiService.carousels, formData);
+    const data = new FormData();
+    data.append("title", formData.title || "");
+    data.append("description", formData.description || "");
+    data.append("image", formData.image || "");
+    data.append("categoryId", formData.categoryId.toString());
+    data.append("createdBy", formData.createdBy);
+    data.append("postedDate", formData.postedDate);
+    data.append("expiredDate", formData.expiredDate);
+  
+    await apiClient.post(ApiService.carousels, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
     showModal({
       title: "Carousel Added",
       message: `Carousel\n${formData.title}\nSuccessfully Added!`,
@@ -61,12 +76,21 @@ export default function AddCarousel() {
     }));
   };
 
-  const handleIdChange = (e) => {
+  const handleCategoryChange = (e) => {
     const categoryIdInput = parseInt(e.target.value, 10);
     setFormData((prevState) => ({
       ...prevState,
       categoryId: categoryIdInput,
     }));
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        image: e.target.files[0],
+      }));
+    }
   };
 
   return (
@@ -105,19 +129,10 @@ export default function AddCarousel() {
             <Label for="image">ImageUrl</Label>
             <Input
               name="image"
-              type="text"
+              type="file"
               placeholder="Enter carousel image URL"
-              onChange={handleInputChange}
-            />
-            <img
-              className="mt-3 w-100"
-              src={formData.image}
-              alt="Carousel preview"
-              style={{
-                display: formData.image.length === 0 ? "none" : "block",
-                maxHeight: "200px",
-                objectFit: "contain",
-              }}
+              onChange={handleFileChange}
+              style={{width: "100%", border: "1px solid lightgrey", padding:"10px", borderRadius: "3px"}}
             />
           </FormGroup>
 
@@ -159,7 +174,7 @@ export default function AddCarousel() {
 
           <FormGroup>
             <Label for="categoryId">Carousel Category</Label>
-            <Input name="categoryId" type="select" onChange={handleIdChange}>
+            <Input name="categoryId" type="select" onChange={handleCategoryChange}>
               {categories.map((category) => (
                 <option value={category.id}>{category.name}</option>
               ))}

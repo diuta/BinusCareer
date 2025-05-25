@@ -21,7 +21,7 @@ export default function AddArticle() {
   const [formData, setFormData] = useState({
     title: "",
     content: "",
-    image: "",
+    image: null,
     categoryId: 1,
     createdBy: user?.name,
     postedDate: "",
@@ -34,7 +34,21 @@ export default function AddArticle() {
   }, [formData]);
 
   const handleClick = async () => {
-    await apiClient.post(ApiService.articles, formData);
+    const data = new FormData();
+    data.append("title", formData.title);
+    data.append("content", formData.content);
+    data.append("image", formData.image || "");
+    data.append("categoryId", formData.categoryId.toString());
+    data.append("createdBy", formData.createdBy);
+    data.append("postedDate", formData.postedDate);
+    data.append("expiredDate", formData.expiredDate);
+  
+    await apiClient.post(ApiService.articles, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  
     showModal({
       title: "Article Added",
       message: `Article\n${formData.title}\nSuccessfully Added!`,
@@ -65,12 +79,21 @@ export default function AddArticle() {
     }));
   };
 
-  const handleIdChange = (e) => {
+  const handleCategoryChange = (e) => {
     const categoryIdInput = parseInt(e.target.value, 10);
     setFormData((prevState) => ({
       ...prevState,
       categoryId: categoryIdInput,
     }));
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        image: e.target.files[0],
+      }));
+    }
   };
 
   return (
@@ -109,9 +132,10 @@ export default function AddArticle() {
             <Label for="image">ImageUrl</Label>
             <Input
               name="image"
-              type="text"
+              type="file"
               placeholder="Enter article image"
-              onChange={handleInputChange}
+              onChange={handleFileChange}
+              style={{width: "100%", border: "1px solid lightgrey", padding:"10px", borderRadius: "3px"}}
             />
           </FormGroup>
 
@@ -155,7 +179,7 @@ export default function AddArticle() {
               name="categoryId"
               type="select"
               placeholder="Enter article category"
-              onChange={handleIdChange}
+              onChange={handleCategoryChange}
             >
               {categories.map((category) => (
                 <option value={category.id}>{category.name}</option>

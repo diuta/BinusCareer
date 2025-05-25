@@ -14,7 +14,7 @@ import { ICarousel } from "../interface/Interface";
 export default function CarouselView() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
-  const [items, setItems] = useState<ICarousel[]>([]);
+  const [carousels, setCarousels] = useState<ICarousel[]>([]);
 
   useEffect(() => {
     getCarouselData();
@@ -25,18 +25,18 @@ export default function CarouselView() {
       `${ApiService.carousels}`
     );
     const filteredItems = response.data.filter((carousel: ICarousel) => getStatus(carousel) === "Published");
-    setItems(filteredItems);
+    setCarousels(filteredItems);
   };
 
   const next = () => {
     if (animating) return;
-    const nextIndex = activeIndex === items.length - 1 ? 0 : activeIndex + 1;
+    const nextIndex = activeIndex === carousels.length - 1 ? 0 : activeIndex + 1;
     setActiveIndex(nextIndex);
   };
 
   const previous = () => {
     if (animating) return;
-    const nextIndex = activeIndex === 0 ? items.length - 1 : activeIndex - 1;
+    const nextIndex = activeIndex === 0 ? carousels.length - 1 : activeIndex - 1;
     setActiveIndex(nextIndex);
   };
 
@@ -58,14 +58,14 @@ export default function CarouselView() {
     return "Published";
   };
 
-  const slides = items.map((item) => (
+  const slides = carousels.map((item) => (
     <CarouselItem
       onExiting={() => setAnimating(true)}
       onExited={() => setAnimating(false)}
       key={item.id}
     >
       <img
-        src={item.image}
+        src={`${ApiService.URL}${item.image}`}
         alt={item.title}
         style={{ width: "100%", height: "50vh" }}
       />
@@ -79,7 +79,7 @@ export default function CarouselView() {
   return (
     <Carousel activeIndex={activeIndex} next={next} previous={previous} style={{ width: "100%" }}>
       <CarouselIndicators
-        items={items}
+        items={carousels}
         activeIndex={activeIndex}
         onClickHandler={goToIndex}
       />

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using backend.Data;
 using backend.Models;
+using backend.DTO;
+using System.IO;
 
 namespace backend.Controllers
 {
@@ -43,24 +45,33 @@ namespace backend.Controllers
 
         // POST: api/Carousel
         [HttpPost]
-        public async Task<ActionResult<Carousel>> AddCarousel(Carousel carouselData)
+        public async Task<ActionResult<Carousel>> AddCarousel([FromForm] CarouselCreateRequest carouselData)
         {
             DateTime carouselDataPostedDate = carouselData.PostedDate;
             DateTime carouselDataExpiredDate = carouselData.ExpiredDate;
-            DateTime carouselCreatedDate = DateTime.Now;
 
-            var carousel = new Carousel(
-                image: carouselData.Image,
-                title: carouselData.Title,
-                description: carouselData.Description,
-                categoryId: carouselData.CategoryId,
-                createdBy: carouselData.CreatedBy,
-                createdDate: carouselCreatedDate,
-                updatedBy: carouselData.UpdatedBy,
-                updatedAt: carouselData.UpdatedAt,
-                postedDate: carouselDataPostedDate,
-                expiredDate: carouselDataExpiredDate
-            );
+            var carousel = new Carousel
+            {
+                Title = carouselData.Title,
+                Description = carouselData.Description,
+                CategoryId = carouselData.CategoryId,
+                CreatedBy = carouselData.CreatedBy,
+                PostedDate = carouselDataPostedDate,
+                ExpiredDate = carouselDataExpiredDate,
+                CreatedDate = DateTime.Now,
+            };
+
+            if (carouselData.Image != null)
+            {
+                var fileName = Path.GetRandomFileName() + Path.GetExtension(carouselData.Image.FileName);
+                var filePath = Path.Combine("wwwroot/images", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await carouselData.Image.CopyToAsync(stream);
+                }
+                carousel.Image = "/images/" + fileName;
+            }
             
             _context.Carousels.Add(carousel);
             await _context.SaveChangesAsync();
@@ -70,7 +81,7 @@ namespace backend.Controllers
 
         // PUT: api/Carousel/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCarousel(int id, Carousel carousel)
+        public async Task<IActionResult> UpdateCarousel(int id, [FromForm] CarouselCreateRequest carousel)
         {
             var prevCarousel = await _context.Carousels.FindAsync(id);
 
@@ -79,14 +90,37 @@ namespace backend.Controllers
                 return NotFound();
             }
             
+            DateTime carouselDataPostedDate = carousel.PostedDate;
+            DateTime carouselDataExpiredDate = carousel.ExpiredDate;
+
             prevCarousel.Title = carousel.Title;
-            prevCarousel.Image = carousel.Image;
             prevCarousel.Description = carousel.Description;
             prevCarousel.CategoryId = carousel.CategoryId;
             prevCarousel.UpdatedBy = carousel.UpdatedBy;
             prevCarousel.UpdatedAt = DateTime.Now;
-            prevCarousel.PostedDate = carousel.PostedDate;
-            prevCarousel.ExpiredDate = carousel.ExpiredDate;
+            prevCarousel.PostedDate = carouselDataPostedDate;
+            prevCarousel.ExpiredDate = carouselDataExpiredDate;
+
+            if (carousel.Image != null)
+            {
+                if (!string.IsNullOrEmpty(prevCarousel.Image))
+                {
+                    var oldImagePath = Path.Combine("wwwroot", prevCarousel.Image.TrimStart('/'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                var fileName = Path.GetRandomFileName() + Path.GetExtension(carousel.Image.FileName);
+                var filePath = Path.Combine("wwwroot/images", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await carousel.Image.CopyToAsync(stream);
+                }
+                prevCarousel.Image = "/images/" + fileName;
+            }
 
             _context.Entry(prevCarousel).State = EntityState.Modified;
             await _context.SaveChangesAsync();

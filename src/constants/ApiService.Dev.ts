@@ -25,6 +25,8 @@ export const ApiService: IApi = {
   changeRole: `${baseURL}/loginADA/changeActiveRole`,
   refreshToken: `${baseURL}/api/User/refresh-token`,
 
+  URL: `${baseURL}`,
+
   // Carousel
   carousels: `${baseURL}/api/Carousel`,
 

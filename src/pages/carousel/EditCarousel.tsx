@@ -1,9 +1,4 @@
-import {
-  Paper,
-  Stack,
-  Typography,
-  Button as MuiButton,
-} from "@mui/material";
+import { Paper, Stack, Typography, Button as MuiButton } from "@mui/material";
 import {
   Container,
   Row,
@@ -24,6 +19,7 @@ import useModal from "../../hooks/use-modal";
 import { useSelector } from "react-redux";
 import { selectAuthUser } from "../../store/auth/selector";
 import { ICategory } from "./interface/Interface";
+import { Box } from "@mui/system";
 
 export default function EditCarousel() {
   const navigate = useNavigate();
@@ -35,12 +31,13 @@ export default function EditCarousel() {
     id: 0,
     title: "",
     description: "",
-    image: "",
     categoryId: 0,
     updatedBy: "",
     postedDate: "",
     expiredDate: "",
   });
+  const [image, setImage] = useState<File>();
+  const [prevImage, setPrevImage] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -49,8 +46,12 @@ export default function EditCarousel() {
     }
   }, [id]);
 
+  useEffect(() => {
+    console.log(image);
+  });
+
   const fetchCategories = async () => {
-    const response = await axios.get(ApiService.categories);
+    const response = await apiClient.get(ApiService.categories);
     setCategories(response.data);
   };
 
@@ -60,19 +61,30 @@ export default function EditCarousel() {
 
     setFormData({
       id: carouselData.id,
-      title: carouselData.title || "",
-      description: carouselData.description || "",
-      image: carouselData.image || "",
+      title: carouselData.title,
+      description: carouselData.description,
       categoryId: carouselData.categoryId,
       updatedBy: user?.name,
       postedDate: carouselData.postedDate.split("T")[0],
       expiredDate: carouselData.expiredDate.split("T")[0],
     });
+    setPrevImage(`${ApiService.URL}${carouselData.image}`);
   };
 
   const handleUpdateCarousel = async () => {
-    console.log(formData);
-    await apiClient.put(`${ApiService.carousels}/${id}`, formData);
+    const data = new FormData();
+    data.append("title", formData.title);
+    data.append("description", formData.description);
+    if (image instanceof File) {
+      data.append("image", image);
+    }
+    data.append("categoryId", formData.categoryId.toString());
+    data.append("postedDate", formData.postedDate);
+    data.append("expiredDate", formData.expiredDate);
+
+    console.log(data);
+
+    await apiClient.put(`${ApiService.carousels}/${id}`, data);
     showModal({
       title: "Carousel Updated",
       message: `Carousel\n${formData.title}\nSuccessfully Updated!`,
@@ -86,12 +98,18 @@ export default function EditCarousel() {
     });
   };
 
-  const handleIdChange = (e) => {
+  const handleCategoryChange = (e) => {
     const categoryIdInput = parseInt(e.target.value, 10);
     setFormData((prevState) => ({
       ...prevState,
       categoryId: categoryIdInput,
     }));
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files) {
+      setImage(e.target.files[0]);
+    }
   };
 
   const handleInputChange = (
@@ -140,24 +158,29 @@ export default function EditCarousel() {
           </FormGroup>
 
           <FormGroup>
-            <Label for="image">ImageUrl</Label>
+            <Label for="image">Image</Label>
             <Input
               name="image"
-              type="text"
-              placeholder="Enter carousel image URL"
-              value={formData.image}
-              onChange={handleInputChange}
-            />
-            <img
-              className="mt-3 w-100"
-              src={formData.image}
-              alt="Carousel preview"
+              type="file"
+              onChange={handleFileChange}
               style={{
-                display: formData.image.length === 0 ? "none" : "block",
-                maxHeight: "200px",
-                objectFit: "contain",
+                width: "100%",
+                border: "1px solid lightgrey",
+                padding: "10px",
+                borderRadius: "3px",
               }}
             />
+            {prevImage && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  my: "1rem",
+                }}
+              >
+                <img src={prevImage} style={{ maxWidth: "35%" }} />
+              </Box>
+            )}
           </FormGroup>
 
           <FormGroup>
@@ -200,15 +223,17 @@ export default function EditCarousel() {
           </Stack>
 
           <FormGroup>
-            <Label for="category">Carousel Category</Label>
+            <Label for="categoryId">Carousel Category</Label>
             <Input
-              name="category"
+              name="categoryId"
               type="select"
               value={formData.categoryId}
-              onChange={handleIdChange}
+              onChange={handleCategoryChange}
             >
               {categories.map((category) => (
-                <option value={category.id}>{category.name}</option>
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
               ))}
             </Input>
           </FormGroup>

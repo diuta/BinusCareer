@@ -24,10 +24,10 @@ namespace backend.Models
         public DateTime PostedDate { get; set; }
         public DateTime ExpiredDate { get; set; }
 
-        public Carousel(string image, string title, string description, int categoryId, string createdBy, DateTime createdDate, DateTime postedDate, DateTime expiredDate, string? updatedBy = null, DateTime? updatedAt = null)
+        public Carousel(string title, string image, string description, int categoryId, string createdBy, DateTime createdDate, DateTime postedDate, DateTime expiredDate, string? updatedBy = null, DateTime? updatedAt = null)
         {
-            Image = image;
             Title = title;
+            Image = image;
             Description = description;
             CategoryId = categoryId;
             CreatedBy = createdBy;

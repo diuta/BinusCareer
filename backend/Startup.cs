@@ -81,6 +81,8 @@ namespace backend
                 c.RoutePrefix = string.Empty;
             });
 
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseCors("AllowReactApp");

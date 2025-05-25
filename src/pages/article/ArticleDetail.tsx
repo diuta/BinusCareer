@@ -17,6 +17,7 @@ export default function ArticleDetail() {
   const isLoggedIn = !!user;
   const publicPath = "/article";
   const hasFetched = useRef(false); // ini biar fetchnya ga multiple
+  const imageUrl = article?.image ? `${ApiService.URL}${article.image}` : "";
 
   useEffect(() => {
     if (!hasFetched.current) {
@@ -60,8 +61,7 @@ export default function ArticleDetail() {
         </Typography>
         <img
           className="w-60 align-self-center"
-          src={article?.image}
-          alt={article?.title}
+          src={imageUrl}
         />
         <Box
           className="w-75 align-self-center mt-5 mb-5 text-secondary"

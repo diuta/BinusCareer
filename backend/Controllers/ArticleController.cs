@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using backend.Data;
 using backend.Models;
+using backend.DTO;
+using System.IO;
 
 namespace backend.Controllers
 {
@@ -79,25 +81,34 @@ namespace backend.Controllers
 
         // POST: api/Article
         [HttpPost]
-        public async Task<ActionResult<Article>> AddArticle(Article articleData)
+        public async Task<ActionResult<Article>> AddArticle([FromForm] ArticleCreateRequest articleData)
         {
             DateTime articleDataPostedDate = articleData.PostedDate;
             DateTime articleDataExpiredDate = articleData.ExpiredDate;
-            DateTime articleCreatedDate = DateTime.Now;
 
-            var article = new Article(
-                title: articleData.Title,
-                image: articleData.Image,
-                content: articleData.Content,
-                categoryId: articleData.CategoryId,
-                createdBy: articleData.CreatedBy,
-                createdDate: articleCreatedDate,
-                updatedBy: articleData.UpdatedBy,
-                updatedAt: articleData.UpdatedAt,
-                postedDate: articleDataPostedDate,
-                expiredDate: articleDataExpiredDate
-            );
-            
+            var article = new Article
+            {
+                Title = articleData.Title,
+                Content = articleData.Content,
+                CategoryId = articleData.CategoryId,
+                CreatedBy = articleData.CreatedBy,
+                PostedDate = articleDataPostedDate,
+                ExpiredDate = articleDataExpiredDate,
+                CreatedDate = DateTime.Now,
+            };
+
+            if (articleData.Image != null)
+            {
+                var fileName = Path.GetRandomFileName() + Path.GetExtension(articleData.Image.FileName);
+                var filePath = Path.Combine("wwwroot/images", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await articleData.Image.CopyToAsync(stream);
+                }
+                article.Image = "/images/" + fileName;
+            }
+
             _context.Articles.Add(article);
             await _context.SaveChangesAsync();
 

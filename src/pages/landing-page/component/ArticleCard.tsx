@@ -18,7 +18,6 @@ import { ApiService } from "../../../constants/ApiService.Dev";
 import apiClient from "../../../config/api-client";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
-import { Col } from "reactstrap";
 
 export default function ArticleCard() {
   const [articles, setArticles] = useState<IArticle[]>([]);
@@ -89,7 +88,7 @@ export default function ArticleCard() {
               >
                 <img
                   className="w-100 d-block"
-                  src={article.image}
+                  src={`${ApiService.URL}${article.image}`}
                   style={{ maxHeight: "120px" }}
                 />
                 <PageWrapper>
