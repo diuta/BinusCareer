@@ -1,5 +1,5 @@
 import { Paper, Typography, Box } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PageWrapper from "../../components/container/PageWrapper";
 import { IArticle } from "./interface/Interface";
 import { ApiService } from "../../constants/ApiService.Dev";
@@ -16,15 +16,20 @@ export default function ArticleDetail() {
   const user = useSelector(selectAuthUser);
   const isLoggedIn = !!user;
   const publicPath = "/article";
+  const hasFetched = useRef(false); // ini biar fetchnya ga multiple
 
   useEffect(() => {
-    getArticleDetail();
+    if (!hasFetched.current) {
+      fetchArticle();
+      hasFetched.current = true;
+    }
   }, [id]);
 
-  const getArticleDetail = async () => {
-    const response: AxiosResponse = await apiClient.get(
-      `${ApiService.articles}/${id}`
-    );
+  const fetchArticle = async () => {
+    const url = location.pathname.startsWith(publicPath)
+      ? `${ApiService.articles}/${id}`
+      : `${ApiService.articles}/${id}?count=false`;
+    const response = await apiClient.get(url);
     setArticle(response.data);
   };
 

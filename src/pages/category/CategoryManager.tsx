@@ -62,19 +62,19 @@ export default function CategoryManager() {
 
   const getCategories = async () => {
     const response: AxiosResponse = await apiClient.get(
-      `${ApiService.getCategories}`
+      `${ApiService.categories}`
     );
     setCategories(response.data);
     setFilteredCategories(response.data);
   };
 
   const handleEdit = (categoryId: string | number) => {
-    navigate(`/edit-category/${categoryId}`);
+    navigate(`/category/${categoryId}/edit`);
   };
 
   const handleDelete = async (categoryId: string | number) => {
     try {
-      await apiClient.delete(`${ApiService.getCategories}/${categoryId}`);
+      await apiClient.delete(`${ApiService.categories}/${categoryId}`);
       getCategories();
     } catch (error) {
       console.error("Error deleting category:", error);
@@ -118,7 +118,7 @@ export default function CategoryManager() {
             width: "20vh"
           }}
           component={Link}
-          href="/add-category"
+          href="/category/add"
           >
             Add Category
           </Button>

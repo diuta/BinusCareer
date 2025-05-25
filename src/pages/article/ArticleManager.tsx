@@ -220,7 +220,7 @@ export default function ArticleManager() {
               <StyledTableCell align="center">EXPIRED DATE</StyledTableCell>
               <StyledTableCell align="center">LAST EDITED</StyledTableCell>
               <StyledTableCell align="center">EDITED BY</StyledTableCell>
-              <StyledTableCell align="center">VIEWERS</StyledTableCell>
+              <StyledTableCell align="center">TOTAL VIEWS</StyledTableCell>
               <StyledTableCell align="center">STATUS</StyledTableCell>
               <StyledTableCell align="center">ACTION</StyledTableCell>
             </TableRow>
@@ -268,7 +268,7 @@ export default function ArticleManager() {
                   {article.updatedBy === "" ? "-" : article.updatedBy}
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  viewers has not been implemented
+                  {article.totalViews}
                 </StyledTableCell>
                 <StyledTableCell
                   align="center"

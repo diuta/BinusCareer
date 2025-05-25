@@ -10,6 +10,7 @@ export interface IArticle {
   updatedAt: Date;
   postedDate: Date;
   expiredDate: Date;
+  totalViews: number;
 }
 
 export interface ICategory {

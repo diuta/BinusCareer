@@ -17,7 +17,7 @@ export default function AddCategory() {
   }, [categoryName]);
 
   const handleClick = async () => {
-    await axios.post(ApiService.addCategory, { name: categoryName });
+    await apiClient.post(ApiService.categories, { name: categoryName });
     showModal({
       title: "Category Added",
       message: `Category\n${categoryName}\nSuccessfully Added!`,
@@ -25,7 +25,7 @@ export default function AddCategory() {
         buttonTitle: "Continue",
         variant: "success",
         onOk: () => {
-          navigate("/category-manager");
+          navigate("/category/manager");
         },
       },
     });

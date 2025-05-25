@@ -42,14 +42,14 @@ export default function AddArticle() {
         buttonTitle: "Continue",
         variant: "success",
         onOk: () => {
-          navigate("/article-manager");
+          navigate("/article/manager");
         },
       },
     });
   };
 
   const fetchCategories = async () => {
-    const response = await axios.get(ApiService.categories);
+    const response = await apiClient.get(ApiService.categories);
     setCategories(response.data);
   };
 
