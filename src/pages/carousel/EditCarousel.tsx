@@ -84,7 +84,11 @@ export default function EditCarousel() {
 
     console.log(data);
 
-    await apiClient.put(`${ApiService.carousels}/${id}`, data);
+    await apiClient.put(`${ApiService.carousels}/${id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     showModal({
       title: "Carousel Updated",
       message: `Carousel\n${formData.title}\nSuccessfully Updated!`,

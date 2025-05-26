@@ -10,6 +10,7 @@ namespace backend.DTO
         public IFormFile Image { get; set; }
         public int CategoryId { get; set; }
         public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
         public DateTime PostedDate { get; set; }
         public DateTime ExpiredDate { get; set; }
     }

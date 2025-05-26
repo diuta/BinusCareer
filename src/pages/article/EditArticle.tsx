@@ -1,4 +1,4 @@
-import { Paper, Typography, Button, Stack } from "@mui/material";
+import { Paper, Typography, Button, Stack, Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Form, FormGroup, Input, Label } from "reactstrap";
 import axios from "axios";
@@ -18,16 +18,15 @@ export default function EditArticle() {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const user = useSelector(selectAuthUser);
   const [formData, setFormData] = useState({
-    id: 0,
     title: "",
     content: "",
-    image: "",
     categoryId: 0,
-    createdBy: "",
     updatedBy: "",
     postedDate: "",
     expiredDate: "",
   });
+  const [prevImage, setPrevImage] = useState("");
+  const [image, setImage] = useState<File>();
 
   useEffect(() => {
     fetchArticleData();
@@ -40,16 +39,15 @@ export default function EditArticle() {
     console.log(articleData);
 
     setFormData({
-      id: articleData.id,
       title: articleData.title || "",
       content: articleData.content || "",
-      image: articleData.image || "",
       postedDate: articleData.postedDate.split("T")[0],
       expiredDate: articleData.expiredDate.split("T")[0],
       categoryId: articleData.categoryId,
-      createdBy: articleData.createdBy || "",
       updatedBy: user?.name,
     });
+
+    setPrevImage(`${ApiService.URL}${articleData.image}`)
   };
 
   const fetchCategories = async () => {
@@ -58,7 +56,25 @@ export default function EditArticle() {
   };
 
   const handleUpdateArticle = async () => {
-    await apiClient.put(`${ApiService.articles}/${id}`, formData);
+    const data = new FormData();
+    data.append("title", formData.title);
+    data.append("content", formData.content);
+        if (image instanceof File) {
+      data.append("image", image);
+    }
+    data.append("categoryId", formData.categoryId.toString());
+    data.append("updatedBy", formData.updatedBy);
+    data.append("postedDate", formData.postedDate);
+    data.append("expiredDate", formData.expiredDate);
+
+    console.log("aaaaaaa", data)
+
+    await apiClient.put(`${ApiService.articles}/${id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
     showModal({
       title: "Article Updated",
       message: `Article\n${formData.title}\nSuccessfully Updated!`,
@@ -66,7 +82,7 @@ export default function EditArticle() {
         buttonTitle: "Continue",
         variant: "success",
         onOk: () => {
-          navigate("/article-manager");
+          navigate("/article/manager");
         },
       },
     });
@@ -84,12 +100,18 @@ export default function EditArticle() {
     }));
   };
 
-  const handleIdChange = (e) => {
+  const handleCategoryChange = (e) => {
     const categoryIdInput = parseInt(e.target.value, 10);
     setFormData((prevState) => ({
       ...prevState,
       categoryId: categoryIdInput,
     }));
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files) {
+      setImage(e.target.files[0]);
+    }
   };
 
   return (
@@ -129,11 +151,27 @@ export default function EditArticle() {
             <Label for="image">ImageUrl</Label>
             <Input
               name="image"
-              type="text"
+              type="file"
               placeholder="Enter article image"
-              value={formData.image}
-              onChange={handleInputChange}
+              onChange={handleFileChange}
+              style={{
+                width: "100%",
+                border: "1px solid lightgrey",
+                padding: "10px",
+                borderRadius: "3px",
+              }}
             />
+            {prevImage && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  my: "1rem",
+                }}
+              >
+                <img src={prevImage} style={{ maxWidth: "35%" }} />
+              </Box>
+            )}
           </FormGroup>
 
           <FormGroup>
@@ -178,7 +216,7 @@ export default function EditArticle() {
               type="select"
               name="categoryId"
               value={formData.categoryId}
-              onChange={handleIdChange}
+              onChange={handleCategoryChange}
             >
               {categories.map((category) => (
                 <option value={category.id}>{category.name}</option>

@@ -51,29 +51,48 @@ namespace backend.Controllers
 
         // PUT: api/Article/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditArticle(int id, Article article)
+        public async Task<IActionResult> EditArticle(int id, [FromForm] ArticleCreateRequest article)
         {
-            if (id != article.Id)
-            {
-                return BadRequest();
-            }
-
-            var existingArticle = await _context.Articles.FindAsync(id);
+            var prevArticle = await _context.Articles.FindAsync(id);
             
-            if (existingArticle == null)
+            if (prevArticle == null)
             {
                 return NotFound();
             }
+
+            DateTime articleDataPostedDate = article.PostedDate;
+            DateTime articleDataExpiredDate = article.ExpiredDate;
             
-            existingArticle.Title = article.Title;
-            existingArticle.Image = article.Image;
-            existingArticle.Content = article.Content;
-            existingArticle.CategoryId = article.CategoryId;
-            existingArticle.PostedDate = article.PostedDate;
-            existingArticle.ExpiredDate = article.ExpiredDate;
-            existingArticle.UpdatedBy = article.UpdatedBy;
-            existingArticle.UpdatedAt = DateTime.Now;
+            prevArticle.Title = article.Title;
+            prevArticle.Content = article.Content;
+            prevArticle.CategoryId = article.CategoryId;
+            prevArticle.PostedDate = article.PostedDate;
+            prevArticle.ExpiredDate = article.ExpiredDate;
+            prevArticle.UpdatedBy = article.UpdatedBy;
+            prevArticle.UpdatedAt = DateTime.Now;
+
+            if (article.Image != null)
+            {
+                if (!string.IsNullOrEmpty(prevArticle.Image))
+                {
+                    var oldImagePath = Path.Combine("wwwroot", prevArticle.Image.TrimStart('/'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                var fileName = Path.GetRandomFileName() + Path.GetExtension(article.Image.FileName);
+                var filePath = Path.Combine("wwwroot/images", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await article.Image.CopyToAsync(stream);
+                }
+                prevArticle.Image = "/images/" + fileName;
+            }
             
+            _context.Entry(prevArticle).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return NoContent();
