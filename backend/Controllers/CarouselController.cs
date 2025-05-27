@@ -139,6 +139,15 @@ namespace backend.Controllers
                 return NotFound(); 
             }
 
+            if (!string.IsNullOrEmpty(carousel.Image))
+            {
+                var oldImagePath = Path.Combine("wwwroot", carousel.Image.TrimStart('/'));
+                if (System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+            }
+
             _context.Carousels.Remove(carousel);
             await _context.SaveChangesAsync();
 

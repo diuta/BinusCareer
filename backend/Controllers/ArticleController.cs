@@ -66,8 +66,8 @@ namespace backend.Controllers
             prevArticle.Title = article.Title;
             prevArticle.Content = article.Content;
             prevArticle.CategoryId = article.CategoryId;
-            prevArticle.PostedDate = article.PostedDate;
-            prevArticle.ExpiredDate = article.ExpiredDate;
+            prevArticle.PostedDate = articleDataPostedDate;
+            prevArticle.ExpiredDate = articleDataExpiredDate;
             prevArticle.UpdatedBy = article.UpdatedBy;
             prevArticle.UpdatedAt = DateTime.Now;
 
@@ -142,6 +142,15 @@ namespace backend.Controllers
             if (article == null)
             {
                 return NotFound();
+            }
+
+            if (!string.IsNullOrEmpty(article.Image))
+            {
+                var oldImagePath = Path.Combine("wwwroot", article.Image.TrimStart('/'));
+                if (System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
             }
 
             _context.Articles.Remove(article);
