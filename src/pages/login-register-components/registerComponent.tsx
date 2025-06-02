@@ -20,20 +20,22 @@ export default function RegisterComponent() {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    hashedPassword: "", // Using hashedPassword to match the backend model
+    hashedPassword: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { showModal } = useModal();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | { target: { name: string; value: string } }
+  ) => {
     const { name, value } = e.target;
-    const fieldName = name === "password" ? "hashedPassword" : name; // Map password field to hashedPassword
-
     setFormData((prevState) => ({
       ...prevState,
-      [fieldName]: value,
+      [name]: value,
     }));
   };
 
@@ -113,7 +115,6 @@ export default function RegisterComponent() {
                   id="email"
                   name="email"
                   type="email"
-                  // We're using password for the input name, but mapping to hashedPassword in the state
                   onChange={handleInputChange}
                   placeholder="Enter your email"
                   disabled={isLoading}
@@ -121,12 +122,11 @@ export default function RegisterComponent() {
               </FormGroup>
 
               <FormGroup>
-                <Label for="password">Password</Label>
+                <Label for="hashedPassword">Password</Label>
                 <Input
-                  id="password"
-                  name="password"
+                  id="hashedPassword"
+                  name="hashedPassword"
                   type="password"
-                  // We're using password for the input name, but mapping to hashedPassword in the state
                   onChange={handleInputChange}
                   placeholder="Enter your password"
                   disabled={isLoading}

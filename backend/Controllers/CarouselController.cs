@@ -49,6 +49,14 @@ namespace backend.Controllers
         {
             DateTime carouselDataPostedDate = carouselData.PostedDate;
             DateTime carouselDataExpiredDate = carouselData.ExpiredDate;
+            if (carouselDataExpiredDate < carouselDataPostedDate)
+            {
+                return BadRequest("The expired date supposed to be AFTER published date");
+            }
+            else if (carouselDataPostedDate == null || carouselDataExpiredDate == null)
+            {
+                return BadRequest("Please insert the posted / expired date");
+            }
 
             var carousel = new Carousel
             {
@@ -63,6 +71,12 @@ namespace backend.Controllers
 
             if (carouselData.Image != null)
             {
+                var extensions = new[] { ".jpg", ".jpeg", ".png" };
+                if (!extensions.Contains(Path.GetExtension(carouselData.Image.FileName).ToLower()))
+                {
+                    return BadRequest("Only Image Files are Allowed");
+                }
+
                 var fileName = Path.GetRandomFileName() + Path.GetExtension(carouselData.Image.FileName);
                 var filePath = Path.Combine("wwwroot/images", fileName);
 
@@ -83,8 +97,8 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCarousel(int id, [FromForm] CarouselCreateRequest carousel)
         {
-            var prevCarousel = await _context.Carousels.FindAsync(id);
 
+            var prevCarousel = await _context.Carousels.FindAsync(id);
             if (prevCarousel == null)
             {
                 return NotFound();
@@ -92,6 +106,14 @@ namespace backend.Controllers
             
             DateTime carouselDataPostedDate = carousel.PostedDate;
             DateTime carouselDataExpiredDate = carousel.ExpiredDate;
+            if (carouselDataExpiredDate < carouselDataPostedDate)
+            {
+                return BadRequest("The expired date supposed to be AFTER published date");
+            }
+            else if (carouselDataPostedDate == null || carouselDataExpiredDate == null)
+            {
+                return BadRequest("Please insert the posted / expired date");
+            }
 
             prevCarousel.Title = carousel.Title;
             prevCarousel.Description = carousel.Description;
@@ -103,6 +125,12 @@ namespace backend.Controllers
 
             if (carousel.Image != null)
             {
+                var extensions = new[] { "jpg", "jpeg", "png" };
+                if (!extensions.Contains(Path.GetExtension(carousel.Image.FileName).ToLower()))
+                {
+                    return BadRequest("Only Image Files are Allowed");
+                }
+                
                 if (!string.IsNullOrEmpty(prevCarousel.Image))
                 {
                     var oldImagePath = Path.Combine("wwwroot", prevCarousel.Image.TrimStart('/'));

@@ -1,16 +1,9 @@
-import {
-  Link,
-  Paper,
-  Stack,
-  Table,
-  Typography,
-} from "@mui/material";
+import { Link, Paper, Stack, Table, Typography } from "@mui/material";
 import CarouselView from "./component/Carousel";
-import ArticleCard from "./component/ArticleCard";
+import ArticleCard from "../../components/common/ArticleCard";
 import { Box } from "@mui/system";
 
 export default function LandingPagePrivate() {
-  
   return (
     <Stack
       spacing={{ xs: 3, sm: 4 }}

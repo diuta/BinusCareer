@@ -53,8 +53,8 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> EditArticle(int id, [FromForm] ArticleCreateRequest article)
         {
+
             var prevArticle = await _context.Articles.FindAsync(id);
-            
             if (prevArticle == null)
             {
                 return NotFound();
@@ -62,6 +62,14 @@ namespace backend.Controllers
 
             DateTime articleDataPostedDate = article.PostedDate;
             DateTime articleDataExpiredDate = article.ExpiredDate;
+            if (articleDataExpiredDate < articleDataPostedDate)
+            {
+                return BadRequest("The expired date supposed to be AFTER published date");
+            }
+            else if (articleDataPostedDate == null || articleDataExpiredDate == null)
+            {
+                return BadRequest("Please insert the posted / expired date");
+            }
             
             prevArticle.Title = article.Title;
             prevArticle.Content = article.Content;
@@ -73,6 +81,12 @@ namespace backend.Controllers
 
             if (article.Image != null)
             {
+                var extensions = new[] { ".jpg", ".jpeg", ".png" };
+                if (!extensions.Contains(Path.GetExtension(article.Image.FileName).ToLower()))
+                {
+                    return BadRequest("Only Image Files are Allowed");
+                }
+
                 if (!string.IsNullOrEmpty(prevArticle.Image))
                 {
                     var oldImagePath = Path.Combine("wwwroot", prevArticle.Image.TrimStart('/'));
@@ -104,6 +118,14 @@ namespace backend.Controllers
         {
             DateTime articleDataPostedDate = articleData.PostedDate;
             DateTime articleDataExpiredDate = articleData.ExpiredDate;
+            if (articleDataExpiredDate < articleDataPostedDate)
+            {
+                return BadRequest("The expired date supposed to be AFTER published date");
+            }
+            else if (articleDataPostedDate == null || articleDataExpiredDate == null)
+            {
+                return BadRequest("Please insert the posted / expired date");
+            }
 
             var article = new Article
             {
@@ -118,6 +140,12 @@ namespace backend.Controllers
 
             if (articleData.Image != null)
             {
+                var extensions = new[] { ".jpg", ".jpeg", ".png" };
+                if (!extensions.Contains(Path.GetExtension(articleData.Image.FileName).ToLower()))
+                {
+                    return BadRequest("Only Image Files are Allowed");
+                }
+                
                 var fileName = Path.GetRandomFileName() + Path.GetExtension(articleData.Image.FileName);
                 var filePath = Path.Combine("wwwroot/images", fileName);
 

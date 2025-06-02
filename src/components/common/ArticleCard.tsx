@@ -12,17 +12,22 @@ import {
   Link,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import PageWrapper from "../../../components/container/PageWrapper";
-import { IArticle } from "../interface/Interface";
-import { ApiService } from "../../../constants/ApiService.Dev";
-import apiClient from "../../../config/api-client";
+import PageWrapper from "../container/PageWrapper";
+import { IArticle } from "../../pages/landing-page/interface/Interface";
+import { ApiService } from "../../constants/ApiService.Dev";
+import apiClient from "../../config/api-client";
 import { AxiosResponse } from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ArticleCard() {
   const [articles, setArticles] = useState<IArticle[]>([]);
   const navigate = useNavigate();
-  const displayArticles = articles.slice(0, 3);
+  const location = useLocation();
+  let displayArticles = articles;
+
+  if (location.pathname.includes("/article")) {
+    displayArticles = articles.slice(0, 3);
+  }
 
   useEffect(() => {
     getArticles();
@@ -45,7 +50,9 @@ export default function ArticleCard() {
     const response: AxiosResponse = await apiClient.get(
       `${ApiService.articles}`
     );
-    const filteredArticles = response.data.filter((article: IArticle) => getStatus(article) === "Published");
+    const filteredArticles = response.data.filter(
+      (article: IArticle) => getStatus(article) === "Published"
+    );
     setArticles(filteredArticles);
   };
 
@@ -99,9 +106,9 @@ export default function ArticleCard() {
               </Paper>
             ))}
           </Stack>
-            <Link href="/article" className="text-center mb-5">
-              View All
-            </Link>
+          <Link href="/article" className="text-center mb-5" style={location.pathname.includes("/article") ? { display: "none" } : {}}>
+            View All
+          </Link>
         </Stack>
       ) : (
         <Typography

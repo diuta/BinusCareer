@@ -60,8 +60,8 @@ export default function ArticleDetail() {
           {article?.title}
         </Typography>
         <img
-          className="w-60 align-self-center"
           src={imageUrl}
+          style={{width: "35%", alignSelf: "center"}}
         />
         <Box
           className="w-75 align-self-center mt-5 mb-5 text-secondary"

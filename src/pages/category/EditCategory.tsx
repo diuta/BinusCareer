@@ -21,14 +21,14 @@ export default function EditCategory() {
   }, []);
 
   const fetchCategoryData = async () => {
-    const response = await apiClient.get(`${ApiService.getCategory}/${id}`);
+    const response = await apiClient.get(`${ApiService.categories}/${id}`);
     const fetchedCategory = response.data;
     setCategoryData(fetchedCategory);
   };
 
   const handleClick = async () => {
     console.log(categoryData);
-    await axios.put(`${ApiService.editCategory}/${id}`, categoryData);
+    await axios.put(`${ApiService.categories}/${id}`, categoryData);
     showModal({
       title: "Category Updated",
       message: `Category\n${categoryData.name}\nSuccessfully Updated!`,
@@ -36,7 +36,7 @@ export default function EditCategory() {
         buttonTitle: "Continue",
         variant: "success",
         onOk: () => {
-          navigate("/category-manager");
+          navigate("/category/manager");
         },
       },
     });

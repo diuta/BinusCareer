@@ -26,6 +26,24 @@ export default function CarouselView() {
     );
     const filteredItems = response.data.filter((carousel: ICarousel) => getStatus(carousel) === "Published");
     setCarousels(filteredItems);
+    
+    const defaultItem = {
+      id: 1,
+      title: "",
+      image: "/images/c.jpg",
+      description: "",
+      categoryId: 1,
+      createdBy: "system",
+      createdDate: new Date(),
+      updatedBy: "system",
+      updatedAt: new Date(),
+      postedDate: new Date(),
+      expiredDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+    }
+
+    if (filteredItems.length === 0) {
+      setCarousels([defaultItem])
+    }
   };
 
   const next = () => {

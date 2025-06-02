@@ -56,6 +56,18 @@ export default function EditArticle() {
   };
 
   const handleUpdateArticle = async () => {
+    if (!formData.postedDate || !formData.expiredDate) {
+      showModal({
+        title: "Carousel Failed To Add",
+        message: "Please insert the posted / expired date",
+        options: {
+          buttonTitle: "Continue",
+          variant: "failed",
+        },
+      });
+      return;
+    }
+
     const data = new FormData();
     data.append("title", formData.title);
     data.append("content", formData.content);
@@ -67,25 +79,36 @@ export default function EditArticle() {
     data.append("postedDate", formData.postedDate);
     data.append("expiredDate", formData.expiredDate);
 
-    console.log("aaaaaaa", data)
-
-    await apiClient.put(`${ApiService.articles}/${id}`, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    showModal({
-      title: "Article Updated",
-      message: `Article\n${formData.title}\nSuccessfully Updated!`,
-      options: {
-        buttonTitle: "Continue",
-        variant: "success",
-        onOk: () => {
-          navigate("/article/manager");
+    try{
+      await apiClient.put(`${ApiService.articles}/${id}`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-      },
-    });
+      });
+  
+      showModal({
+        title: "Article Updated",
+        message: `Article\n${formData.title}\nSuccessfully Updated!`,
+        options: {
+          buttonTitle: "Continue",
+          variant: "success",
+          onOk: () => {
+            navigate("/article/manager");
+          },
+        },
+      });
+    } catch (error){
+      if(axios.isAxiosError(error)){
+        showModal({
+          title: "Article Failed To Update",
+          message: error.response?.data,
+          options: {
+            buttonTitle: "Continue",
+            variant: "failed",
+          },
+        });
+      }
+    }
   };
 
   const handleInputChange = (

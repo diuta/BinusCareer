@@ -36,6 +36,18 @@ export default function AddCarousel() {
   };
 
   const handleClick = async () => {
+    if (!formData.postedDate || !formData.expiredDate) {
+      showModal({
+        title: "Carousel Failed To Add",
+        message: "Please insert the posted / expired date",
+        options: {
+          buttonTitle: "Continue",
+          variant: "failed",
+        },
+      });
+      return;
+    }
+
     const data = new FormData();
     data.append("title", formData.title || "");
     data.append("description", formData.description || "");
@@ -44,24 +56,37 @@ export default function AddCarousel() {
     data.append("createdBy", formData.createdBy);
     data.append("postedDate", formData.postedDate);
     data.append("expiredDate", formData.expiredDate);
-  
-    await apiClient.post(ApiService.carousels, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
 
-    showModal({
-      title: "Carousel Added",
-      message: `Carousel\n${formData.title}\nSuccessfully Added!`,
-      options: {
-        buttonTitle: "Continue",
-        variant: "success",
-        onOk: () => {
-          navigate("/carousel/manager");
+    try {
+      await apiClient.post(ApiService.carousels, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-      },
-    });
+      });
+
+      showModal({
+        title: "Carousel Added",
+        message: `Carousel\n${formData.title}\nSuccessfully Added!`,
+        options: {
+          buttonTitle: "Continue",
+          variant: "success",
+          onOk: () => {
+            navigate("/carousel/manager");
+          },
+        },
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        showModal({
+          title: "Carousel Failed To Add",
+          message: error.response?.data,
+          options: {
+            buttonTitle: "Continue",
+            variant: "failed",
+          },
+        });
+      }
+    }
   };
 
   const handleInputChange = (
@@ -132,7 +157,12 @@ export default function AddCarousel() {
               type="file"
               placeholder="Enter carousel image URL"
               onChange={handleFileChange}
-              style={{width: "100%", border: "1px solid lightgrey", padding:"10px", borderRadius: "3px"}}
+              style={{
+                width: "100%",
+                border: "1px solid lightgrey",
+                padding: "10px",
+                borderRadius: "3px",
+              }}
             />
           </FormGroup>
 
@@ -174,7 +204,11 @@ export default function AddCarousel() {
 
           <FormGroup>
             <Label for="categoryId">Carousel Category</Label>
-            <Input name="categoryId" type="select" onChange={handleCategoryChange}>
+            <Input
+              name="categoryId"
+              type="select"
+              onChange={handleCategoryChange}
+            >
               {categories.map((category) => (
                 <option value={category.id}>{category.name}</option>
               ))}

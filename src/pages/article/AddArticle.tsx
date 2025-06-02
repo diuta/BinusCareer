@@ -34,6 +34,18 @@ export default function AddArticle() {
   }, [formData]);
 
   const handleClick = async () => {
+    if (!formData.postedDate || !formData.expiredDate) {
+      showModal({
+        title: "Carousel Failed To Add",
+        message: "Please insert the posted / expired date",
+        options: {
+          buttonTitle: "Continue",
+          variant: "failed",
+        },
+      });
+      return;
+    }
+
     const data = new FormData();
     data.append("title", formData.title);
     data.append("content", formData.content);
@@ -42,24 +54,37 @@ export default function AddArticle() {
     data.append("createdBy", formData.createdBy);
     data.append("postedDate", formData.postedDate);
     data.append("expiredDate", formData.expiredDate);
-  
-    await apiClient.post(ApiService.articles, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-  
-    showModal({
-      title: "Article Added",
-      message: `Article\n${formData.title}\nSuccessfully Added!`,
-      options: {
-        buttonTitle: "Continue",
-        variant: "success",
-        onOk: () => {
-          navigate("/article/manager");
+
+    try {
+      await apiClient.post(ApiService.articles, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-      },
-    });
+      });
+
+      showModal({
+        title: "Article Added",
+        message: `Article\n${formData.title}\nSuccessfully Added!`,
+        options: {
+          buttonTitle: "Continue",
+          variant: "success",
+          onOk: () => {
+            navigate("/article/manager");
+          },
+        },
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        showModal({
+          title: "Article Failed To Add",
+          message: error.response?.data,
+          options: {
+            buttonTitle: "Continue",
+            variant: "failed",
+          },
+        });
+      }
+    }
   };
 
   const fetchCategories = async () => {
@@ -135,7 +160,12 @@ export default function AddArticle() {
               type="file"
               placeholder="Enter article image"
               onChange={handleFileChange}
-              style={{width: "100%", border: "1px solid lightgrey", padding:"10px", borderRadius: "3px"}}
+              style={{
+                width: "100%",
+                border: "1px solid lightgrey",
+                padding: "10px",
+                borderRadius: "3px",
+              }}
             />
           </FormGroup>
 

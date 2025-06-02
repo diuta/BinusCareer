@@ -19,6 +19,7 @@ import { AxiosResponse } from "axios";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectAuthUser } from "../../store/auth/selector";
+import ArticleCard from "../../components/common/ArticleCard";
 
 export default function Article() {
   const [articles, setArticles] = useState<IArticle[]>([]);
@@ -66,50 +67,8 @@ export default function Article() {
   };
 
   return (
-    <Box sx={{ padding: 5}}>
-      <Typography
-        variant="h3"
-        className="text-center"
-        sx={{ mb: 10, color: "#2196f3" }}
-      >
-        ARTICLES
-      </Typography>
-      <Stack
-        className="justify-content-center mb-5"
-        spacing={{ xs: 3, sm: 4 }}
-        direction="row"
-        useFlexGap
-        sx={{ flexWrap: "wrap" }}
-      >
-        {articles.map((article) => (
-          <Paper
-            key={article.id}
-            elevation={2}
-            sx={{
-              width: {
-                xs: "80vw",
-                sm: "40vw",
-                md: "25vw",
-              },
-            }}
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => handleClick(article.id)}
-          >
-            <img
-              className="w-100 d-block"
-              src={article.image}
-              style={{ maxHeight: "150px" }}
-            />
-            <PageWrapper>
-              <Typography variant="body1" gutterBottom>
-                {article.title}
-              </Typography>
-            </PageWrapper>
-          </Paper>
-        ))}
-      </Stack>
-    </Box>
+    <PageWrapper>
+      <ArticleCard/>
+    </PageWrapper>
   );
 }

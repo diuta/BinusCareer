@@ -1,13 +1,6 @@
-import {
-  Box,
-  Link,
-  Paper,
-  Stack,
-  Table,
-  Typography,
-} from "@mui/material";
+import { Box, Link, Paper, Stack, Table, Typography } from "@mui/material";
 import CarouselView from "./component/Carousel";
-import ArticleCard from "./component/ArticleCard";
+import ArticleCard from "../../components/common/ArticleCard";
 import { useSelector } from "react-redux";
 import { selectAuthUser } from "../../store/auth/selector";
 import { useNavigate } from "react-router-dom";
