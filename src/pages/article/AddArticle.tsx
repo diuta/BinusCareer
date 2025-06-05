@@ -1,4 +1,4 @@
-import { Paper, Typography, Button } from "@mui/material";
+import { Paper, Typography, Button, Grid } from "@mui/material";
 import { title } from "process";
 import React, { useEffect, useState } from "react";
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
@@ -7,7 +7,7 @@ import useModal from "../../hooks/use-modal";
 import { useNavigate } from "react-router-dom";
 import { ApiService } from "../../constants/ApiService.Dev";
 import JoditComponent from "./component/JoditComponent";
-import { Stack } from "@mui/system";
+import { Box, Stack } from "@mui/system";
 import { ICategory } from "./interface/Interface";
 import { useSelector } from "react-redux";
 import { selectAuthUser } from "../../store/auth/selector";
@@ -73,17 +73,15 @@ export default function AddArticle() {
           },
         },
       });
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        showModal({
-          title: "Article Failed To Add",
-          message: error.response?.data,
-          options: {
-            buttonTitle: "Continue",
-            variant: "failed",
-          },
-        });
-      }
+    } catch (error: any) {
+      showModal({
+        title: "Article Failed To Add",
+        message: error.response?.data,
+        options: {
+          buttonTitle: "Continue",
+          variant: "failed",
+        },
+      });
     }
   };
 
@@ -178,30 +176,37 @@ export default function AddArticle() {
             />
           </FormGroup>
 
-          <Stack
+          <Grid
+            container
             direction="row"
-            spacing={2}
+            columns={2}
             sx={{ justifyContent: "space-between", width: "100%", mb: 3 }}
           >
-            <FormGroup>
-              <Label for="postedDate">Posted Date</Label>
-              <Input
-                name="postedDate"
-                type="date"
-                onChange={handleInputChange}
-                style={{ width: "35vw" }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="expiredDate">Expired Date</Label>
-              <Input
-                name="expiredDate"
-                type="date"
-                onChange={handleInputChange}
-                style={{ width: "35vw" }}
-              />
-            </FormGroup>
-          </Stack>
+            <Grid item xs={1}>
+              <FormGroup>
+                <Label for="postedDate">Posted Date</Label>
+                <Input
+                  name="postedDate"
+                  type="date"
+                  onChange={handleInputChange}
+                  style={{ width: "90%", maxWidth: "35vw" }}
+                />
+              </FormGroup>
+            </Grid>
+            <Grid item xs={1}>
+              <Box sx={{ display: "flex", justifyContent: "flex-end"}}>
+                <FormGroup style={{width: "90%"}}>
+                  <Label for="expiredDate">Expired Date</Label>
+                  <Input
+                    name="expiredDate"
+                    type="date"
+                    onChange={handleInputChange}
+                    style={{ width: "100%", maxWidth: "35vw" }}
+                  />
+                </FormGroup>
+              </Box>
+            </Grid>
+          </Grid>
 
           <FormGroup>
             <Label for="categoryId">Article Category</Label>

@@ -25,7 +25,7 @@ export default function LandingPagePublic() {
       <Box sx={{ width: "100vw" }}>
         <CarouselView />
       </Box>
-      <Typography variant="h3" className="text-center">
+      <Typography variant="h3" sx={{textAlign: "center"}}>
         ARTICLES
       </Typography>
       <Box>

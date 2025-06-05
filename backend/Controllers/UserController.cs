@@ -34,7 +34,7 @@ namespace backend.Controllers
             var response = _userService.Login(model, ipAddress());
 
             if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest("Username or password is incorrect");
 
             setTokenCookie(response.RefreshToken);
 
@@ -119,6 +119,9 @@ namespace backend.Controllers
             else if (foundEmail != null)
             {
                 return Conflict("Email already exists");
+            }
+            else if (!user.Email.Contains("@")){
+                return BadRequest("Please input the correct email format");
             }
             
             user.HashedPassword = BC.HashPassword(user.HashedPassword);

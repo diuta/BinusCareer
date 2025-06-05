@@ -4,6 +4,8 @@ import {
   Typography,
   CircularProgress,
   Box,
+  Stack,
+  Link,
 } from "@mui/material";
 import React, { useState } from "react";
 import {
@@ -61,25 +63,14 @@ export function Register() {
           },
         },
       });
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        let errorMessage = "An error occurred during registration";
-
-        if (error.response?.status === 409) {
-          errorMessage =
-            error.response.data || "Username or email already exists";
-        } else if (error.response?.data) {
-          errorMessage = error.response.data;
-        }
-
-        showModal({
-          title: "Registration Failed",
-          message: errorMessage,
-          options: {
-            variant: "failed",
-          },
-        });
-      }
+    } catch (error: any) {
+      showModal({
+        title: "Registration Failed",
+        message: error.response?.data,
+        options: {
+          variant: "failed",
+        },
+      });
     } finally {
       setIsLoading(false);
     }
@@ -110,9 +101,9 @@ export function Register() {
             }}
           >
             <PageWrapper>
-              <Row className="justify-content-center">
-                <Col md="6">
-                  <h1 className="text-center mb-4">Register</h1>
+            <Stack direction="row" sx={{justifyContent: "center"}}>
+              <Stack direction="column">
+                <Typography variant="h3" sx={{textAlign: "center", mb: 4}}>Register</Typography>
                   <Form>
                     <FormGroup>
                       <Label for="username">Username</Label>
@@ -164,12 +155,12 @@ export function Register() {
                       )}
                     </Button>
 
-                    <div className="text-center mt-3">
-                      <a href="/login">Already have an account? Login</a>
-                    </div>
+                    <Link href="/register" sx={{textAlign: "center", mt: 2, display: "block", color: "#2196f3", textDecoration: "none"}}>
+                      Already have an account? Login
+                    </Link>
                   </Form>
-                </Col>
-              </Row>
+                </Stack>
+              </Stack>
             </PageWrapper>
           </Paper>
         </Box>

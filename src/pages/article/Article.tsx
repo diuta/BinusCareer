@@ -27,7 +27,7 @@ export default function Article() {
   const location = useLocation();
   const user = useSelector(selectAuthUser);
   const isLoggedIn = !!user;
-  const publicPath = "/article";
+  const publicPath = "/articles";
 
   useEffect(() => {
     getArticles();
@@ -58,7 +58,7 @@ export default function Article() {
 
   if (isLoggedIn && location.pathname.startsWith(publicPath)) {
     return (
-      <Navigate to="/protected/article/" state={{ from: location }} replace />
+      <Navigate to="/protected/articles" state={{ from: location }} replace />
     );
   }
 

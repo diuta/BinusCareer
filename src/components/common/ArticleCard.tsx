@@ -94,9 +94,8 @@ export default function ArticleCard() {
                 onClick={() => handleClick(article.id)}
               >
                 <img
-                  className="w-100 d-block"
                   src={`${ApiService.URL}${article.image}`}
-                  style={{ maxHeight: "120px" }}
+                  style={{ maxHeight: "120px", width: "100%" }}
                 />
                 <PageWrapper>
                   <Typography variant="body1" gutterBottom>
@@ -106,7 +105,13 @@ export default function ArticleCard() {
               </Paper>
             ))}
           </Stack>
-          <Link href="/article" className="text-center mb-5" style={location.pathname.includes("/article") ? { display: "none" } : {}}>
+          <Link
+            href="/articles"
+            sx={{ mb: 5, textAlign: "center" }}
+            style={
+              location.pathname.includes("/articles") ? { display: "none" } : {}
+            }
+          >
             View All
           </Link>
         </Stack>
@@ -119,6 +124,105 @@ export default function ArticleCard() {
           }}
         >
           No Articles Available
+        </Typography>
+      )}
+    </Box>
+  );
+}
+
+export function ArticleRec() {
+  const [articles, setArticles] = useState<IArticle[]>([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const displayArticles = articles.slice(0, 4);
+
+  useEffect(() => {
+    getArticles();
+  }, []);
+
+  const getStatus = (article: IArticle) => {
+    const currentDate = new Date();
+    const postedDate = new Date(article.postedDate);
+    const expiredDate = new Date(article.expiredDate);
+    if (expiredDate < currentDate) {
+      return "Expired";
+    }
+    if (postedDate > currentDate) {
+      return "Pending";
+    }
+    return "Published";
+  };
+
+  const getArticles = async () => {
+    const response: AxiosResponse = await apiClient.get(
+      `${ApiService.articles}`
+    );
+    const filteredArticles = response.data.filter(
+      (article: IArticle) =>
+        getStatus(article) === "Published" &&
+        article.id !== Number(location.pathname.split("/").pop())
+    );
+    setArticles(filteredArticles);
+  };
+
+  const handleClick = (id: number) => {
+    navigate(`/article/${id}`);
+  };
+
+  return (
+    <Box>
+      {articles.length > 0 ? (
+        <Stack
+          spacing={{ xs: 3, sm: 4 }}
+          direction="column"
+          useFlexGap
+          sx={{ flexWrap: "wrap", mt: 3 }}
+          justifyContent="center"
+        >
+          {displayArticles.map((article) => (
+            <Paper
+              key={article.id}
+              elevation={2}
+              sx={{
+                width: {
+                  sm: "15vw",
+                },
+                minHeight: "200px",
+                maxHeight: "250px",
+              }}
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => handleClick(article.id)}
+            >
+              <img
+                src={`${ApiService.URL}${article.image}`}
+                style={{ maxHeight: "120px", width: "100%" }}
+              />
+              <PageWrapper>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontSize: "70%"
+                  }}
+                  gutterBottom
+                >
+                  {article.title}
+                </Typography>
+              </PageWrapper>
+            </Paper>
+          ))}
+        </Stack>
+      ) : (
+        <Typography
+          variant="body1"
+          color="primary"
+          sx={{
+            textAlign: "center",
+            mt: 5,
+          }}
+        >
+          No More Available Article
         </Typography>
       )}
     </Box>

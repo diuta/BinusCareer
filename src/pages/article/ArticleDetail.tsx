@@ -1,4 +1,4 @@
-import { Paper, Typography, Box } from "@mui/material";
+import { Paper, Typography, Box, Grid, Stack } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import PageWrapper from "../../components/container/PageWrapper";
 import { IArticle } from "./interface/Interface";
@@ -8,6 +8,7 @@ import apiClient from "../../config/api-client";
 import { useParams, Navigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectAuthUser } from "../../store/auth/selector";
+import { ArticleRec } from "../../components/common/ArticleCard";
 
 export default function ArticleDetail() {
   const [article, setArticle] = useState<IArticle>();
@@ -45,33 +46,58 @@ export default function ArticleDetail() {
   }
 
   return (
-    <Paper
-      elevation={5}
-      sx={{
-        width: "100%",
-        minHeight: "100vh",
-      }}
-    >
-      <PageWrapper>
-        <Typography
-          className="text-center mb-4 mt-3 text-secondary align-self-center justify-content-center w-75"
-          variant="h4"
-        >
-          {article?.title}
-        </Typography>
-        <img
-          src={imageUrl}
-          style={{width: "35%", alignSelf: "center"}}
-        />
-        <Box
-          className="w-75 align-self-center mt-5 mb-5 text-secondary"
-          sx={{
-            maxWidth: "100%",
-            overflow: "hidden",
-          }}
-          dangerouslySetInnerHTML={{ __html: article?.content || "" }}
-        />
-      </PageWrapper>
-    </Paper>
+    <Grid container columns={5} mb="1vh">
+      <Grid item lg={4} sm={5} sx={{ borderRight: "1px solid lightgrey" }}>
+        <PageWrapper>
+          <Stack
+            direction="column"
+            sx={{ display: "flex", justifyContent: "center" }}
+          >
+            <Typography
+              variant="h4"
+              sx={{
+                textAlign: "center",
+                my: 4,
+                color: "dimgrey",
+                width: "80%",
+                alignSelf: "center",
+              }}
+            >
+              {article?.title}
+            </Typography>
+            <img src={imageUrl} style={{ width: "60%", alignSelf: "center" }} />
+            <Box
+              sx={{
+                maxWidth: "100%",
+                overflow: "hidden",
+                textAlign: "justify",
+                my: 4,
+                color: "dimgrey",
+                width: "80%",
+                alignSelf: "center",
+              }}
+              dangerouslySetInnerHTML={{ __html: article?.content || "" }}
+            />
+          </Stack>
+        </PageWrapper>
+      </Grid>
+      <Grid item lg={1} sx={{ display: { xs: "none", lg: "block" } }}>
+        <PageWrapper>
+          <Stack
+            direction="column"
+            sx={{
+              display: "flex",
+              alignContent: "center",
+              minHeight: "100%",
+            }}
+          >
+            <Typography variant="h5" color="dimgrey">
+              Recent Articles
+            </Typography>
+            <ArticleRec />
+          </Stack>
+        </PageWrapper>
+      </Grid>
+    </Grid>
   );
 }

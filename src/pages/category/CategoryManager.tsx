@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import React, { useEffect, useState } from "react";
 import PageWrapper from "../../components/container/PageWrapper";
 import { ICategory } from "./interface/Interface";
@@ -42,7 +43,7 @@ export default function CategoryManager() {
     getCategories();
   }, []);
 
-  useEffect(() => {
+  const handleSearch = () => {
     let result = [...categories];
 
     if (searchTerm.trim() !== "") {
@@ -58,7 +59,7 @@ export default function CategoryManager() {
     }
 
     setFilteredCategories(result);
-  }, [categories, searchTerm, sortBy]);
+  };
 
   const getCategories = async () => {
     const response: AxiosResponse = await apiClient.get(
@@ -90,11 +91,12 @@ export default function CategoryManager() {
   };
 
   return (
-    <Paper elevation={5} sx={{ padding: 5 }}>
-      <Typography variant="h3" className="text-center" sx={{ mb: 3, color: "#2196f3" }}>
-        CATEGORY LIST
-      </Typography>
-      <Stack direction="column" spacing={2} sx={{ mb: 3 }}>
+    <PageWrapper>
+      <Stack
+        direction="column"
+        spacing={2}
+        sx={{ mb: 3, borderBottom: "1px solid lightgrey", paddingBottom: 2 }}
+      >
         <InputLabel id="search-label">Search</InputLabel>
         <TextField
           variant="outlined"
@@ -114,14 +116,30 @@ export default function CategoryManager() {
           <MenuItem value="name">Category Name</MenuItem>
           <MenuItem value="id">Category ID</MenuItem>
         </Select>
-        <Button variant="contained" color="primary" sx={{
-            width: "20vh"
-          }}
-          component={Link}
-          href="/category/add"
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddCircleOutlineRoundedIcon />}
+            sx={{
+              width: "15vh",
+            }}
+            component={Link}
+            href="/category/add"
           >
-            Add Category
+            Add
           </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              width: "15vh",
+            }}
+            onClick={() => handleSearch()}
+          >
+            Apply
+          </Button>
+        </Box>
       </Stack>
 
       <TableContainer component={Paper} elevation={0}>
@@ -186,6 +204,6 @@ export default function CategoryManager() {
           </TableBody>
         </Table>
       </TableContainer>
-    </Paper>
+    </PageWrapper>
   );
 }

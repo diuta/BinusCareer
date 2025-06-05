@@ -128,7 +128,7 @@ export const protectedRoutes: Route[] = [
     title: "Alumni Data",
     description: "Filter Alumni Data",
     component: Article,
-    path: "/protected/article",
+    path: "/protected/articles",
     isEnabled: true,
     appendDivider: true,
   },

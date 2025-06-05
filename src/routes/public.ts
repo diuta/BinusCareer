@@ -79,7 +79,7 @@ export const publicRoutes: Route[] = [
     title: "Alumni Data",
     description: "Filter Alumni Data",
     component: Article,
-    path: "/article",
+    path: "/articles",
     isEnabled: true,
     appendDivider: true,
   },

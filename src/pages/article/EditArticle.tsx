@@ -1,4 +1,4 @@
-import { Paper, Typography, Button, Stack, Box } from "@mui/material";
+import { Paper, Typography, Button, Stack, Box, Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Form, FormGroup, Input, Label } from "reactstrap";
 import axios from "axios";
@@ -206,32 +206,39 @@ export default function EditArticle() {
             />
           </FormGroup>
 
-          <Stack
+          <Grid
+            container
             direction="row"
-            spacing={2}
+            columns={2}
             sx={{ justifyContent: "space-between", width: "100%", mb: 3 }}
           >
-            <FormGroup>
-              <Label for="postedDate">Posted Date</Label>
-              <Input
-                type="date"
-                name="postedDate"
-                value={formData.postedDate}
-                onChange={handleInputChange}
-                style={{ width: "35vw" }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="expiredDate">Expired Date</Label>
-              <Input
-                type="date"
-                name="expiredDate"
-                value={formData.expiredDate}
-                onChange={handleInputChange}
-                style={{ width: "35vw" }}
-              />
-            </FormGroup>
-          </Stack>
+            <Grid item xs={1}>
+              <FormGroup>
+                <Label for="postedDate">Posted Date</Label>
+                <Input
+                  name="postedDate"
+                  type="date"
+                  onChange={handleInputChange}
+                  value={formData.postedDate}
+                  style={{ width: "90%", maxWidth: "35vw" }}
+                />
+              </FormGroup>
+            </Grid>
+            <Grid item xs={1}>
+              <Box sx={{ display: "flex", justifyContent: "flex-end"}}>
+                <FormGroup style={{width: "90%"}}>
+                  <Label for="expiredDate">Expired Date</Label>
+                  <Input
+                    name="expiredDate"
+                    type="date"
+                    onChange={handleInputChange}
+                    value={formData.expiredDate}
+                    style={{ width: "100%", maxWidth: "35vw" }}
+                  />
+                </FormGroup>
+              </Box>
+            </Grid>
+          </Grid>
 
           <FormGroup>
             <Label for="categoryId">Article Category</Label>

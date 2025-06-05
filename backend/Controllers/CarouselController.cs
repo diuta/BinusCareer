@@ -125,7 +125,7 @@ namespace backend.Controllers
 
             if (carousel.Image != null)
             {
-                var extensions = new[] { "jpg", "jpeg", "png" };
+                var extensions = new[] { ".jpg", ".jpeg", ".png" };
                 if (!extensions.Contains(Path.GetExtension(carousel.Image.FileName).ToLower()))
                 {
                     return BadRequest("Only Image Files are Allowed");

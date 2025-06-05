@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import React, { useEffect, useState } from "react";
 import PageWrapper from "../../components/container/PageWrapper";
 import { ICarousel, ICategory } from "./interface/Interface";
@@ -45,13 +46,13 @@ export default function CarouselManager() {
     getCategories();
   }, []);
 
-  useEffect(() => {
+  const handleSearch = () => {
     let result = [...carousels];
 
     if (searchTerm.trim() !== "") {
       result = result.filter(
         (carousel) =>
-          carousel.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          carousel.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           categories
             .find((category) => category.id === carousel.categoryId)
             ?.name.toLowerCase()
@@ -76,7 +77,7 @@ export default function CarouselManager() {
     }
 
     setFilteredCarousels(result);
-  }, [carousels, searchTerm, categorySelected, statusSelected]);
+  };
 
   const getCarousels = async () => {
     const response: AxiosResponse = await apiClient.get(
@@ -132,15 +133,8 @@ export default function CarouselManager() {
   }));
 
   return (
-    <Paper elevation={5} sx={{ padding: 5 }}>
-      <Typography
-        variant="h3"
-        className="text-center"
-        sx={{ mb: 3, color: "#2196f3" }}
-      >
-        CAROUSEL LIST
-      </Typography>
-      <Stack direction="column" spacing={2} sx={{ mb: 3 }}>
+    <PageWrapper>
+      <Stack direction="column" spacing={2} sx={{ mb: 3, borderBottom: "1px solid lightgrey", paddingBottom: 2 }}>
         <InputLabel id="search-label">Search</InputLabel>
         <TextField
           variant="outlined"
@@ -183,17 +177,28 @@ export default function CarouselManager() {
             </Select>
           </Box>
         </Stack>
-        <Box>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button
             variant="contained"
             color="primary"
+            startIcon={<AddCircleOutlineRoundedIcon />}
             sx={{
-              width: "20vh",
+              width: "15vh",
             }}
             component={Link}
             href="/carousel/add"
           >
-            Add Carousel
+            Add
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              width: "15vh",
+            }}
+            onClick={() => handleSearch()}
+          >
+            Apply
           </Button>
         </Box>
       </Stack>
@@ -295,6 +300,6 @@ export default function CarouselManager() {
           </TableBody>
         </Table>
       </TableContainer>
-    </Paper>
+  </PageWrapper>
   );
 }

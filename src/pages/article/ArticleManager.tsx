@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import React, { useEffect, useState } from "react";
 import { IArticle, ICategory } from "./interface/Interface";
 import { ApiService } from "../../constants/ApiService.Dev";
@@ -29,6 +30,7 @@ import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import { blue, grey } from "@mui/material/colors";
 import { fontWeight } from "@mui/system";
+import PageWrapper from "../../components/container/PageWrapper";
 
 export default function ArticleManager() {
   const [articles, setArticles] = useState<IArticle[]>([]);
@@ -44,13 +46,13 @@ export default function ArticleManager() {
     getCategories();
   }, []);
 
-  useEffect(() => {
+  const handleSearch = () => {
     let result = [...articles];
 
     if (searchTerm.trim() !== "") {
       result = result.filter(
         (article) =>
-          article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          article.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           categories
             .find((category) => category.id === article.categoryId)
             ?.name.toLowerCase()
@@ -75,7 +77,7 @@ export default function ArticleManager() {
     }
 
     setFilteredArticles(result);
-  }, [articles, searchTerm, categorySelected, statusSelected]);
+  };
 
   const getStatus = (article: IArticle) => {
     const currentDate = new Date();
@@ -135,15 +137,8 @@ export default function ArticleManager() {
   }));
 
   return (
-    <Paper elevation={5} sx={{ padding: 5 }}>
-      <Typography
-        variant="h3"
-        className="text-center"
-        sx={{ mb: 3, color: "#2196f3" }}
-      >
-        ARTICLE LIST
-      </Typography>
-      <Stack direction="column" spacing={2} sx={{ mb: 3 }}>
+    <PageWrapper>
+      <Stack direction="column" spacing={2} sx={{ mb: 3, borderBottom: "1px solid lightgrey", paddingBottom: 2 }}>
         <InputLabel id="search-label">Search</InputLabel>
         <TextField
           variant="outlined"
@@ -188,17 +183,28 @@ export default function ArticleManager() {
             </Select>
           </Box>
         </Stack>
-        <Box>
+        <Box sx={{display : "flex", justifyContent: "space-between"}}>
           <Button
             variant="contained"
             color="primary"
+            startIcon={<AddCircleOutlineRoundedIcon />}
             sx={{
-              width: "20vh",
+              width: "15vh",
             }}
             component={Link}
             href="/article/add"
           >
-            Add Article
+            Add
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              width: "15vh",
+            }}
+            onClick={() => handleSearch()}
+          >
+            Apply
           </Button>
         </Box>
       </Stack>
@@ -317,6 +323,6 @@ export default function ArticleManager() {
           </TableBody>
         </Table>
       </TableContainer>
-    </Paper>
+    </PageWrapper>
   );
 }

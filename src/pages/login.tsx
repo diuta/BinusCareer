@@ -4,6 +4,7 @@ import {
   Typography,
   CircularProgress,
   Box,
+  Link,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
@@ -26,6 +27,7 @@ import { setProfile } from "../store/profile/slice";
 import { setAuth } from "../store/auth/slice";
 import { useDispatch } from "react-redux";
 import SEO from "../components/common/seo";
+import { Stack } from "@mui/system";
 
 export function Login() {
   const navigate = useNavigate();
@@ -74,7 +76,7 @@ export function Login() {
       onError: (error: any) => {
         showModal({
           title: "Login Failed",
-          message: error.response?.data?.message,
+          message: error.response?.data,
           options: {
             variant: "failed",
           },
@@ -98,7 +100,7 @@ export function Login() {
   return (
     <>
       <SEO />
-      <Container maxWidth={false} disableGutters>
+      <Container disableGutters>
         <Box
           sx={{
             width: "100%",
@@ -115,15 +117,14 @@ export function Login() {
               alignItems: "center",
               width: {
                 xs: "100%",
-                md: "50%",
-                xl: "40%",
+                md: "50%"
               },
             }}
           >
             <PageWrapper>
-              <Row className="justify-content-center">
-                <Col md="6">
-                  <h1 className="text-center mb-4">Login</h1>
+              <Stack direction="row" sx={{justifyContent: "center"}}>
+                <Stack direction="column">
+                  <Typography variant="h3" sx={{textAlign: "center", mb: 4}}>Login</Typography>
                   <Form>
                     <FormGroup>
                       <Label for="username">Username</Label>
@@ -164,14 +165,12 @@ export function Login() {
                       )}
                     </Button>
 
-                    <div className="text-center mt-3">
-                      <a href="/register">
-                        Don&apos;t have an account? Register
-                      </a>
-                    </div>
+                    <Link href="/register" sx={{textAlign: "center", mt: 2, display: "block", color: "#2196f3", textDecoration: "none"}}>
+                      Don&apos;t have an account? Register
+                    </Link>
                   </Form>
-                </Col>
-              </Row>
+                </Stack>
+              </Stack>
             </PageWrapper>
           </Paper>
         </Box>
