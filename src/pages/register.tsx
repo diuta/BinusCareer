@@ -155,7 +155,7 @@ export function Register() {
                       )}
                     </Button>
 
-                    <Link href="/register" sx={{textAlign: "center", mt: 2, display: "block", color: "#2196f3", textDecoration: "none"}}>
+                    <Link href="/login" sx={{textAlign: "center", mt: 2, display: "block", color: "#2196f3", textDecoration: "none"}}>
                       Already have an account? Login
                     </Link>
                   </Form>

@@ -34,7 +34,13 @@ namespace backend.Controllers
             var response = _userService.Login(model, ipAddress());
 
             if (response == null)
+            {
                 return BadRequest("Username or password is incorrect");
+            }
+            else if (string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
+            {
+                return BadRequest("Please fill out the forms");
+            }
 
             setTokenCookie(response.RefreshToken);
 
@@ -111,16 +117,21 @@ namespace backend.Controllers
             
             var foundEmail = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == user.Email);
-                
+
             if (foundUser != null)
             {
                 return Conflict("User already exists");
-            } 
+            }
+            else if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.HashedPassword))
+            {
+                return BadRequest("Please fill out the forms");
+            }
             else if (foundEmail != null)
             {
                 return Conflict("Email already exists");
             }
-            else if (!user.Email.Contains("@")){
+            else if (!user.Email.Contains("@"))
+            {
                 return BadRequest("Please input the correct email format");
             }
             

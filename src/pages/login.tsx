@@ -94,7 +94,17 @@ export function Login() {
   };
 
   const handleLogin = () => {
-    authenticate(formData);
+    if (!formData.username || !formData.password) {
+      showModal({
+        title: "Login Failed",
+        message: "Please fill in both username and password.",
+        options: {
+          variant: "failed",
+        },
+      });
+    } else {
+      authenticate(formData);
+    }
   };
 
   return (
